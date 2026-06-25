@@ -12,8 +12,9 @@ analyzer:
     strict-casts: true
     strict-raw-types: true
   errors:
-    # Architectural / correctness rules promoted to errors.
-    always_use_package_imports: error
+    # Correctness rules promoted to errors.
+    # Prohíbe imports relativos que crucen el límite del paquete vía lib/.
+    # Dentro de lib/ se usan imports relativos intra-capa (idiomático).
     avoid_relative_lib_imports: error
 
 linter:

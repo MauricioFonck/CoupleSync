@@ -114,7 +114,7 @@
 - [x] Crear proyecto Flutter web: `flutter create --platforms web couplesync` (o configurar el existente).
 - [x] 🔒 Configurar identidad git local: `git config user.name "MauricioFonck"` y `git config user.email "mauricioandresvergarafonseca@gmail.com"`.
 - [x] Crear `.gitignore` adecuado para Flutter + excluir `**/serviceAccount*.json`, `*.env`, `automation/node_modules`, claves y secrets.
-- [ ] 🔧 MANUAL (pendiente — requiere tu auth de GitHub): conectar remoto y primer push:
+- [x] Conectar remoto y primer push (hecho: `main` rastrea `origin/main`, 14 commits subidos):
   ```bash
   git remote add origin https://github.com/MauricioFonck/CoupleSync.git
   git branch -M main
@@ -169,7 +169,7 @@
 - [x] Crear `docs/DECISIONS.md` (ADR breve) enlazando a las secciones de decisiones de este ROADMAP.
 
 **Definition of Done — Fase 1**
-- [ ] Repo en GitHub (`main`) con identidad correcta y sin trailers de coautoría. *(Commits locales listos y verificados; **falta el `git push` manual**.)*
+- [x] Repo en GitHub (`main`) con identidad correcta y sin trailers de coautoría. *(Push hecho; `main` rastrea `origin/main`.)*
 - [x] `flutter analyze` limpio y estructura hexagonal creada.
 - [ ] App arranca en Chrome con Firebase inicializado (Auth/Firestore/FCM), **sin** Storage ni Functions. *(Build web OK; arranque end-to-end requiere los pasos MANUAL de la consola: usuarios A/B, habilitar Firestore/FCM.)*
 - [ ] App Check activo y API key restringida por referrer (verificado). *(Integrado en cliente; **faltan los pasos MANUAL** de consola: site key + referrer.)*

@@ -111,68 +111,69 @@
 **Dependencias:** ninguna · **Entregables:** repo conectado a GitHub, proyecto Flutter web con estructura hexagonal vacía, dependencias resueltas, Firebase (Auth/Firestore/FCM) configurado sin Storage/Functions, App Check + restricción de key, decisiones §5/§6 documentadas (este ROADMAP), scaffolding PWA inicial corriendo.
 
 ### Plan 1.1 — Inicialización de repositorio e identidad
-- [ ] Crear proyecto Flutter web: `flutter create --platforms web couplesync` (o configurar el existente).
-- [ ] 🔒 Configurar identidad git local: `git config user.name "MauricioFonck"` y `git config user.email "mauricioandresvergarafonseca@gmail.com"`.
-- [ ] Crear `.gitignore` adecuado para Flutter + excluir `**/serviceAccount*.json`, `*.env`, `automation/node_modules`, claves y secrets.
-- [ ] 🔧 MANUAL: conectar remoto y primer push:
+- [x] Crear proyecto Flutter web: `flutter create --platforms web couplesync` (o configurar el existente).
+- [x] 🔒 Configurar identidad git local: `git config user.name "MauricioFonck"` y `git config user.email "mauricioandresvergarafonseca@gmail.com"`.
+- [x] Crear `.gitignore` adecuado para Flutter + excluir `**/serviceAccount*.json`, `*.env`, `automation/node_modules`, claves y secrets.
+- [ ] 🔧 MANUAL (pendiente — requiere tu auth de GitHub): conectar remoto y primer push:
   ```bash
   git remote add origin https://github.com/MauricioFonck/CoupleSync.git
   git branch -M main
   git push -u origin main
   ```
-- [ ] Verificar que el commit inicial **no** contiene trailers de coautoría.
+- [x] Verificar que el commit inicial **no** contiene trailers de coautoría. *(Verificado: historial sin `Co-authored-by`/`Generated with`.)*
 
 ### Plan 1.2 — Estructura hexagonal de carpetas
-- [ ] Crear `lib/domain/{entities,value_objects,ports,use_cases,exceptions}/` (con `.gitkeep`).
-- [ ] Crear `lib/application/{services,commands,queries}/`.
-- [ ] Crear `lib/infrastructure/{firebase,repositories,datasources,notifications,authentication,media}/`.
-- [ ] Crear `lib/presentation/{screens,widgets,providers,routes,theme}/`.
-- [ ] Crear `automation/` (script Node de notificaciones) y `docs/`.
-- [ ] Documentar en `docs/ARCHITECTURE.md` la regla de dependencias (todo apunta al dominio) y qué puede importar cada capa.
+- [x] Crear `lib/domain/{entities,value_objects,ports,use_cases,exceptions}/` (con `.gitkeep`).
+- [x] Crear `lib/application/{services,commands,queries}/`.
+- [x] Crear `lib/infrastructure/{firebase,repositories,datasources,notifications,authentication,media}/`.
+- [x] Crear `lib/presentation/{screens,widgets,providers,routes,theme}/`.
+- [x] Crear `automation/` (script Node de notificaciones) y `docs/`.
+- [x] Documentar en `docs/ARCHITECTURE.md` la regla de dependencias (todo apunta al dominio) y qué puede importar cada capa.
 
 ### Plan 1.3 — Linting y calidad de código
-- [ ] Añadir `flutter_lints` (o `very_good_analysis`) y configurar `analysis_options.yaml`.
-- [ ] Añadir regla/guía que prohíba imports de Firebase/Flutter dentro de `lib/domain/**` (verificación manual + test de arquitectura en Fase 12).
-- [ ] Configurar `dart format` y verificar `flutter analyze` sin warnings.
+- [x] Añadir `flutter_lints` y configurar `analysis_options.yaml` (linting estricto: strict-casts/raw-types, package-imports como error).
+- [x] Añadir regla/guía que prohíba imports de Firebase/Flutter dentro de `lib/domain/**` (documentada en `docs/ARCHITECTURE.md`; test de arquitectura en Fase 12).
+- [x] Configurar `dart format` y verificar `flutter analyze` sin warnings. *(`No issues found!`)*
 
 ### Plan 1.4 — Dependencias (versiones estables actuales)
-- [ ] Verificar y fijar versiones estables actuales de: `flutter_riverpod`, `go_router`, `firebase_core`, `firebase_auth`, `cloud_firestore`, `firebase_messaging`, `firebase_app_check`, `fl_chart`.
-- [ ] Verificar y fijar: `freezed`, `freezed_annotation`, `json_serializable`, `json_annotation`, `build_runner`.
-- [ ] Verificar **soporte web** de `image_picker` / `file_picker` y elegir uno; fijar versión.
-- [ ] Añadir paquete de procesamiento de imágenes **compatible con web** (`image` Dart puro) — **NO** `flutter_image_compress` (es nativo).
-- [ ] Añadir dev deps de test: `mocktail`/`mockito`, `flutter_test`, `integration_test`.
-- [ ] Ejecutar `flutter pub get` y confirmar resolución sin conflictos.
+- [x] Verificar y fijar versiones estables actuales de: `flutter_riverpod` 3.3.2, `go_router` 17.3.0, `firebase_core` 4.11.0, `firebase_auth` 6.5.4, `cloud_firestore` 6.6.0, `firebase_messaging` 16.4.1, `firebase_app_check` 0.4.5, `fl_chart` 1.2.0.
+- [x] Verificar y fijar: `freezed` 3.2.6-dev.1 *(ver nota)*, `freezed_annotation` 3.1.0, `json_serializable` 6.14.0, `json_annotation` 4.12.0, `build_runner` 2.15.0.
+- [x] Verificar **soporte web** de `image_picker` y elegirlo (1.2.2, con soporte web).
+- [x] Añadir paquete de procesamiento de imágenes **compatible con web** (`image` 4.9.1, Dart puro) — **NO** `flutter_image_compress`.
+- [x] Añadir dev deps de test: `mocktail` 1.0.5, `flutter_test` (SDK). *(`integration_test` se añadirá en Fase 12.)*
+- [x] Ejecutar `flutter pub get` y confirmar resolución sin conflictos.
+  > ⚠️ **Nota (riesgo aceptado):** `freezed` se fija en la preview `3.2.6-dev.1` porque la cadena estable `3.2.x` depende de `source_gen ^3`, incompatible con `json_serializable 6.14` (requiere `source_gen ^4`) bajo Dart 3.12. Revisar al actualizar SDK/paquetes. Ver `docs/DECISIONS.md`.
 
 ### Plan 1.5 — Configuración Firebase (Auth/Firestore/FCM, sin Storage/Functions)
-- [ ] Generar `firebase_options.dart` con FlutterFire CLI usando el proyecto `couplesync-cb0a8` (o crear `FirebaseOptions` manualmente con los valores del prompt).
-- [ ] 🔒 Confirmar que **NO** se incluye/usa `storageBucket` y **NO** se inicializa Firebase Storage.
-- [ ] Inicializar `Firebase.initializeApp` en el arranque (composition root mínimo).
-- [ ] 🔧 MANUAL: en Firebase Console crear **manualmente** los 2 usuarios (A y B) en Authentication (email/password). Sin registro público.
-- [ ] 🔧 MANUAL: habilitar Cloud Firestore (modo producción) y FCM en la consola.
-- [ ] Habilitar persistencia offline de Firestore para web (⚠️ DECISIÓN D4).
-- [ ] (Opcional) Integrar Analytics solo si no añade complejidad.
+- [x] Crear `FirebaseOptions` manualmente (`lib/firebase_options.dart`, web-only) con los valores del proyecto `couplesync-cb0a8`. *(FlutterFire CLI no instalado; el prompt permite la vía manual.)*
+- [x] 🔒 Confirmar que **NO** se incluye/usa `storageBucket` y **NO** se inicializa Firebase Storage. *(Omitido a propósito en `firebase_options.dart`.)*
+- [x] Inicializar `Firebase.initializeApp` en el arranque (`lib/main.dart`).
+- [ ] 🔧 MANUAL (pendiente — Firebase Console): crear **manualmente** los 2 usuarios (A y B) en Authentication (email/password). Sin registro público.
+- [ ] 🔧 MANUAL (pendiente — Firebase Console): habilitar Cloud Firestore (modo producción) y FCM.
+- [ ] Habilitar persistencia offline de Firestore para web (⚠️ DECISIÓN D4). *(Se cablea junto al datasource en Fase 4.3.)*
+- [ ] (Opcional) Integrar Analytics solo si no añade complejidad. *(Pospuesto; no aporta valor en Fase 1.)*
 
 ### Plan 1.6 — App Check y restricción de API key 🔒
-- [ ] 🔧 MANUAL: registrar la app web en **App Check** con proveedor reCAPTCHA v3/Enterprise (⚠️ DECISIÓN D5).
-- [ ] Integrar `firebase_app_check` en el cliente y activarlo en el arranque.
-- [ ] 🔧 MANUAL: en Google Cloud Console, restringir la API key web por **HTTP referrer** (dominios de hosting + localhost para dev).
-- [ ] Documentar el procedimiento en `docs/SECURITY.md`.
+- [ ] 🔧 MANUAL (pendiente — Firebase Console): registrar la app web en **App Check** con proveedor reCAPTCHA v3/Enterprise (⚠️ DECISIÓN D5) y obtener la site key.
+- [x] Integrar `firebase_app_check` en el cliente y activarlo en el arranque. *(Activación guardada por `--dart-define=RECAPTCHA_V3_SITE_KEY`; no bloquea el arranque si está vacía.)*
+- [ ] 🔧 MANUAL (pendiente — Google Cloud Console): restringir la API key web por **HTTP referrer** (dominios de hosting + localhost).
+- [x] Documentar el procedimiento en `docs/SECURITY.md`.
 
 ### Plan 1.7 — Scaffolding PWA inicial
-- [ ] Configurar `web/manifest.json` base (nombre, iconos, theme/background color, display `standalone`).
-- [ ] Verificar `web/index.html` y arranque de `flutter run -d chrome` con pantalla placeholder.
-- [ ] Confirmar que la PWA carga y App Check no bloquea el arranque.
+- [x] Configurar `web/manifest.json` (nombre CoupleSync, iconos, theme `#E91E63`/background `#FFFFFF`, display `standalone`).
+- [x] Actualizar `web/index.html` (título/descripción) y pantalla placeholder de arranque. *(Build web verificado: `√ Built build\web`.)*
+- [x] Confirmar que la PWA compila y App Check no bloquea el arranque. *(Sin site key, App Check no se activa.)*
 
 ### Plan 1.8 — Documentación de decisiones (§5/§6)
 - [x] Crear `docs/ROADMAP.md` con convención de seguimiento, decisiones D1–D6 y todas las fases (este documento).
-- [ ] Crear `docs/DECISIONS.md` (ADR breve) enlazando a las secciones de decisiones de este ROADMAP.
+- [x] Crear `docs/DECISIONS.md` (ADR breve) enlazando a las secciones de decisiones de este ROADMAP.
 
 **Definition of Done — Fase 1**
-- [ ] Repo en GitHub (`main`) con identidad correcta y sin trailers de coautoría.
-- [ ] `flutter analyze` limpio y estructura hexagonal creada.
-- [ ] App arranca en Chrome con Firebase inicializado (Auth/Firestore/FCM), **sin** Storage ni Functions.
-- [ ] App Check activo y API key restringida por referrer (verificado).
-- [ ] Decisiones D1–D6 documentadas en `docs/`.
+- [ ] Repo en GitHub (`main`) con identidad correcta y sin trailers de coautoría. *(Commits locales listos y verificados; **falta el `git push` manual**.)*
+- [x] `flutter analyze` limpio y estructura hexagonal creada.
+- [ ] App arranca en Chrome con Firebase inicializado (Auth/Firestore/FCM), **sin** Storage ni Functions. *(Build web OK; arranque end-to-end requiere los pasos MANUAL de la consola: usuarios A/B, habilitar Firestore/FCM.)*
+- [ ] App Check activo y API key restringida por referrer (verificado). *(Integrado en cliente; **faltan los pasos MANUAL** de consola: site key + referrer.)*
+- [x] Decisiones D1–D6 documentadas en `docs/`.
 
 ---
 

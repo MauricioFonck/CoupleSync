@@ -180,47 +180,47 @@
 # Fase 2 — Dominio
 **Dependencias:** Fase 1 completa · **Entregables:** capa `domain/` en Dart puro con tests verdes ≥80%.
 
-### Plan 2.1 — Value Objects
-- [ ] Definir VOs inmutables: `UserId`, `ActivityId`, `PenaltyId`, `MediaId`, `ScheduledEventId`, `WeekId` (ISO `año-Wsemana`).
-- [ ] Definir VOs de negocio: `DateRange`, `TimeSlot`, `Severity`, `ActivityCategory`, `CompletionStatus`, `ConfirmationStatus`.
-- [ ] Implementar validación e invariantes (el constructor falla ante valores inválidos → lanza excepción de dominio).
-- [ ] Tests unitarios de cada VO (casos válidos e inválidos).
+### Plan 2.1 — Value Objects ✅
+- [x] Definir VOs inmutables: `UserId`, `ActivityId`, `PenaltyId`, `MediaId`, `ScheduledEventId`, `WeekId` (ISO `año-Wsemana`, con `fromDate` y días de la semana).
+- [x] Definir VOs de negocio: `DateRange`, `TimeSlot`, `Severity`, `ActivityCategory`, `CompletionStatus`, `ConfirmationStatus` (+ `SchedulingConfig`).
+- [x] Implementar validación e invariantes (el constructor falla ante valores inválidos → lanza excepción de dominio).
+- [x] Tests unitarios de cada VO (casos válidos e inválidos).
 
-### Plan 2.2 — Entidades
-- [ ] Modelar `User` (A/B), `Activity` (`id,title,description,category,createdBy,active,imageId?,createdAt,updatedAt`).
-- [ ] Modelar `Penalty` (`id,title,description,severity,active,imageId?`).
-- [ ] Modelar `Availability` (días disponibles, horarios, fechas bloqueadas, periodos de indisponibilidad por usuario).
-- [ ] Modelar `WeeklySchedule`, `ScheduledEvent` (`id,date,activities,status,confirmations,notes,createdAt`; estados `pending|completed|missed|rescheduled`).
-- [ ] Modelar `Confirmation` (por usuario y actividad: `pending|approved|rejected`).
-- [ ] Modelar `StreakStats` (racha actual, mejor racha, cumplimiento semanal/mensual/anual).
-- [ ] Regla interna: `ScheduledEvent` se completa **solo si A y B aprueban**.
-- [ ] Tests unitarios de cada entidad (incl. reglas de transición de estado).
+### Plan 2.2 — Entidades ✅
+- [x] Modelar `User` (A/B), `Activity` (`id,title,description,category,createdBy,active,imageId?,createdAt,updatedAt`).
+- [x] Modelar `Penalty` (`id,title,description,severity,active,imageId?`).
+- [x] Modelar `Availability` (días disponibles, horarios, fechas bloqueadas, periodos de indisponibilidad) + `isDayAvailable`.
+- [x] Modelar `WeeklySchedule`, `ScheduledEvent` (`id,date,activities,status,confirmations,notes,createdAt`; estados `pending|completed|missed|rescheduled`).
+- [x] Modelar `Confirmation` (por usuario y actividad: `pending|approved|rejected`) + `MediaBlob` (D1).
+- [x] Modelar `StreakStats` (racha actual, mejor racha, cumplimiento semanal/mensual/anual).
+- [x] Regla interna: `ScheduledEvent` se completa **solo si A y B aprueban** (`isFullyApprovedBy`).
+- [x] Tests unitarios de cada entidad (incl. reglas de transición de estado).
 
-### Plan 2.3 — Excepciones de dominio
-- [ ] Definir jerarquía de excepciones de dominio (`DomainException` base + específicas: validación, invariante, no encontrado, conflicto de generación).
-- [ ] Tests de que los casos de uso lanzan las excepciones correctas.
+### Plan 2.3 — Excepciones de dominio ✅
+- [x] Definir jerarquía **sellada** (`DomainException` base + validación, invariante, no-encontrado, conflicto de generación).
+- [x] Tests de que los casos de uso lanzan las excepciones correctas.
 
-### Plan 2.4 — Ports (interfaces)
-- [ ] Definir ports de repositorio: `ActivityRepositoryPort`, `PenaltyRepositoryPort`, `AvailabilityRepositoryPort`, `WeeklyScheduleRepositoryPort`, `ScheduledEventRepositoryPort`, `ConfirmationRepositoryPort`, `MediaRepositoryPort`, `StatisticsRepositoryPort`.
-- [ ] Definir ports de servicios: `AuthPort`, `ClockPort` (fecha/hora testeable), `RandomPort` (selección aleatoria testeable), `NotificationTokenPort`.
-- [ ] Confirmar que **ningún** port importa Firebase/Flutter.
+### Plan 2.4 — Ports (interfaces) ✅
+- [x] Definir ports de repositorio: `Activity`, `Penalty`, `Availability`, `WeeklySchedule`, `ScheduledEvent`, `Confirmation`, `Media`, `Statistics`, `Settings`.
+- [x] Definir ports de servicios: `AuthPort`, `ClockPort`, `RandomPort`, `NotificationTokenPort`, `IdGeneratorPort`.
+- [x] Confirmar que **ningún** port importa Firebase/Flutter (solo entidades/VOs de dominio).
 
-### Plan 2.5 — Use Cases
-- [ ] CRUD de actividades: crear/editar/activar/desactivar/listar.
-- [ ] CRUD de penitencias.
-- [ ] Gestión de disponibilidad (set/get por usuario).
-- [ ] `GenerateWeeklyScheduleUseCase`: obtener disponibilidad → actividades activas → aplicar restricciones (aleatoriedad vía `RandomPort`, respetar disponibilidad, evitar repeticiones consecutivas, mantener variedad, nº días/semana y nº actividades/día configurables) → generar agenda → persistir vía port.
-- [ ] `ConfirmActivityUseCase` (A/B) y `CompleteEventUseCase` (solo si ambos aprueban).
-- [ ] `RescheduleEventUseCase` (reprogramación manual).
-- [ ] `GeneratePenaltyUseCase` ante incumplimiento (según reglas).
-- [ ] `CalculateStreaksUseCase` (racha actual, mejor, cumplimiento semanal/mensual/anual).
-- [ ] Tests unitarios de todos los use cases con dobles de prueba (mocks de ports), incluyendo `ClockPort`/`RandomPort` deterministas.
+### Plan 2.5 — Use Cases ✅
+- [x] CRUD de actividades: crear/editar/activar/desactivar/eliminar.
+- [x] CRUD de penitencias.
+- [x] Gestión de disponibilidad (set/get por usuario).
+- [x] `GenerateWeeklyScheduleUseCase`: disponibilidad de ambos → actividades activas → restricciones (aleatoriedad vía `RandomPort`, respeta disponibilidad, evita repeticiones consecutivas, mantiene variedad, nº días/semana y nº actividades/día configurables) → persiste con guard atómico.
+- [x] `ConfirmActivityUseCase` (A/B): registra confirmación y completa el evento **solo si ambos aprueban** (`CompleteEvent` integrado aquí).
+- [x] `RescheduleEventUseCase` (reprogramación manual).
+- [x] `GeneratePenaltyUseCase` (selección aleatoria de penitencia activa).
+- [x] `CalculateStreaksUseCase` (racha actual, mejor, cumplimiento semanal/mensual/anual).
+- [x] Tests unitarios de todos los use cases con dobles de prueba in-memory + `ClockPort`/`RandomPort` deterministas.
 
 **Definition of Done — Fase 2**
-- [ ] `domain/` no importa Flutter/Firebase/Riverpod (verificado).
-- [ ] Cobertura de dominio ≥ 80%.
-- [ ] Todos los tests de dominio en verde.
-- [ ] `GenerateWeeklyScheduleUseCase` y `CalculateStreaksUseCase` cubiertos con casos límite.
+- [x] `domain/` no importa Flutter/Firebase/Riverpod (solo `package:collection`, Dart puro; test de arquitectura automatizado en Fase 12).
+- [x] Cobertura de dominio ≥ 80%. *(Medida: **95.0%**, 512/539 líneas.)*
+- [x] Todos los tests de dominio en verde. *(89 tests.)*
+- [x] `GenerateWeeklyScheduleUseCase` y `CalculateStreaksUseCase` cubiertos con casos límite.
 
 ---
 

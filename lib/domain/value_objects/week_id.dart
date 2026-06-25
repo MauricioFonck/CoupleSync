@@ -46,6 +46,18 @@ final class WeekId {
   /// Número de semana ISO (1..53).
   int get isoWeek => int.parse(value.substring(6));
 
+  /// Lunes (UTC) de esta semana ISO.
+  DateTime get mondayUtc {
+    // El 4 de enero siempre cae en la semana ISO 1.
+    final jan4 = DateTime.utc(isoYear, 1, 4);
+    final week1Monday = jan4.subtract(Duration(days: jan4.weekday - 1));
+    return week1Monday.add(Duration(days: (isoWeek - 1) * 7));
+  }
+
+  /// Los 7 días (UTC) de esta semana, de lunes a domingo.
+  List<DateTime> get daysUtc =>
+      List<DateTime>.generate(7, (i) => mondayUtc.add(Duration(days: i)));
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) || (other is WeekId && other.value == value);

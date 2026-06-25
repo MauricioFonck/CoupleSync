@@ -26,6 +26,10 @@ linter:
     prefer_const_declarations: true
     require_trailing_commas: true
     unawaited_futures: true
+    # Desactivado a propósito: mapeamos parámetros named públicos a campos
+    # privados (`: _x = x`) en casos de uso/servicios; un formal privado no es
+    # válido como argumento named, así que el idioma es intencional.
+    prefer_initializing_formals: false
     avoid_print: true
     directives_ordering: true
     sort_pub_dependencies: false

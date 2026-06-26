@@ -54,3 +54,5 @@ secrets/
 # Node (automation/ — emisor de notificaciones, Fase 9)
 automation/node_modules/
 automation/.firebase/
+firestore-rules-tests/node_modules/
+.firebase/

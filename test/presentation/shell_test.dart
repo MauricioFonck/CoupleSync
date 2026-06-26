@@ -17,7 +17,7 @@ void main() {
 
     await tester.tap(find.text('Historial').first);
     await tester.pumpAndSettle();
-    expect(find.text('Historial — próximamente'), findsOneWidget);
+    expect(find.text('Sin historial todavía.'), findsOneWidget);
   });
 
   testWidgets('usa NavigationBar en pantallas compactas', (tester) async {

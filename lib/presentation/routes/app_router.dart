@@ -6,9 +6,10 @@ import '../providers/app_providers.dart';
 import '../screens/activities_screen.dart';
 import '../screens/availability_screen.dart';
 import '../screens/dashboard_screen.dart';
+import '../screens/history_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/penalties_screen.dart';
-import '../screens/placeholder_screen.dart';
+import '../screens/schedule_screen.dart';
 import '../widgets/app_shell.dart';
 
 /// Router de la app con **guard de autenticación**: sin sesión redirige a
@@ -59,13 +60,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/schedule',
-            builder: (context, state) =>
-                const PlaceholderScreen(title: 'Agenda'),
+            builder: (context, state) => const ScheduleScreen(),
           ),
           GoRoute(
             path: '/history',
-            builder: (context, state) =>
-                const PlaceholderScreen(title: 'Historial'),
+            builder: (context, state) => const HistoryScreen(),
           ),
         ],
       ),

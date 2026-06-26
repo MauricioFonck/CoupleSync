@@ -13,6 +13,17 @@ final homeBootstrapProvider = FutureProvider<void>((ref) async {
   final couple = ref.read(coupleServiceProvider);
   await couple.registerProfile(user);
 
+  // Registro de token FCM (best-effort; null en tests).
+  final tokens = ref.read(notificationTokenPortProvider);
+  if (tokens != null) {
+    try {
+      final token = await tokens.currentToken();
+      if (token != null) await tokens.register(user.id, token);
+    } on Object {
+      // El push es opcional; no bloquea el arranque.
+    }
+  }
+
   final idsResult = await couple.coupleUserIds();
   final ids = idsResult.valueOrNull ?? const [];
   if (ids.length < 2) return; // hace falta conocer a ambos miembros

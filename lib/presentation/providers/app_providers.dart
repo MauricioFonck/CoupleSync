@@ -11,6 +11,7 @@ import '../../application/services/statistics_service.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/ports/media_processor_port.dart';
 import '../../domain/ports/media_repository_port.dart';
+import '../../domain/ports/notification_token_port.dart';
 import '../../domain/value_objects/ids.dart';
 import '../../infrastructure/composition_root.dart';
 
@@ -65,6 +66,11 @@ final mediaProcessorProvider = Provider<MediaProcessorPort>(
 
 final mediaRepositoryProvider = Provider<MediaRepositoryPort>(
   (ref) => ref.watch(compositionRootProvider).mediaRepository,
+);
+
+/// Puerto de tokens FCM. Es `null` en tests (sin `FirebaseMessaging`).
+final notificationTokenPortProvider = Provider<NotificationTokenPort?>(
+  (ref) => ref.watch(compositionRootProvider).notificationTokenPort,
 );
 
 /// Id del usuario autenticado actual (o null).

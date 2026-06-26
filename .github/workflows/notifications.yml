@@ -1,0 +1,42 @@
+name: Notifications
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # recordatorio diario (08:00 UTC)
+    - cron: '0 18 * * 0' # resumen + nueva semana (domingos 18:00 UTC)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'daily | weekly'
+        default: 'daily'
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        working-directory: automation
+        run: npm ci || npm install
+
+      - name: Determine mode
+        id: mode
+        run: |
+          if [ "${{ github.event.schedule }}" = "0 18 * * 0" ]; then
+            echo "mode=weekly" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ github.event.inputs.mode }}" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=daily" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send notifications
+        working-directory: automation
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node index.js ${{ steps.mode.outputs.mode }}

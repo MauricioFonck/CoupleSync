@@ -26,7 +26,11 @@ class FcmNotificationTokenAdapter implements NotificationTokenPort {
       _db.collection(FirestoreCollections.users).doc(userId.value);
 
   @override
-  Future<String?> currentToken() => _messaging.getToken(vapidKey: _vapidKey);
+  Future<String?> currentToken() async {
+    // Solicita permiso (no-op si ya concedido) antes de pedir el token.
+    await _messaging.requestPermission();
+    return _messaging.getToken(vapidKey: _vapidKey);
+  }
 
   @override
   Future<void> register(UserId userId, String token) => _userDoc(userId).set({

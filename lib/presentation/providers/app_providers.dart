@@ -7,6 +7,9 @@ import '../../application/services/penalty_service.dart';
 import '../../application/services/scheduling_service.dart';
 import '../../application/services/statistics_service.dart';
 import '../../domain/entities/user.dart';
+import '../../domain/ports/media_processor_port.dart';
+import '../../domain/ports/media_repository_port.dart';
+import '../../domain/value_objects/ids.dart';
 import '../../infrastructure/composition_root.dart';
 
 /// Raíz de composición. Se **sobrescribe** en `main()` (con Firebase real) y en
@@ -44,4 +47,17 @@ final confirmationServiceProvider = Provider<ConfirmationService>(
 
 final statisticsServiceProvider = Provider<StatisticsService>(
   (ref) => ref.watch(compositionRootProvider).statisticsService,
+);
+
+final mediaProcessorProvider = Provider<MediaProcessorPort>(
+  (ref) => ref.watch(compositionRootProvider).mediaProcessor,
+);
+
+final mediaRepositoryProvider = Provider<MediaRepositoryPort>(
+  (ref) => ref.watch(compositionRootProvider).mediaRepository,
+);
+
+/// Id del usuario autenticado actual (o null).
+final currentUserIdProvider = Provider<UserId?>(
+  (ref) => ref.watch(authStateProvider).asData?.value?.id,
 );

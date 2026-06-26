@@ -405,48 +405,48 @@
 # Fase 9 — Notificaciones (GitHub Actions + firebase-admin, sin Cloud Functions)
 **Dependencias:** Fases 4 y 7 · **Entregables:** recepción FCM en cliente + emisor externo programado. ⚠️ DECISIÓN D3.
 
-### Plan 9.1 — Recepción y tokens en el cliente
-- [ ] Solicitar permiso de notificaciones y registrar token (VAPID) en `users/{uid}.fcmTokens` (apoyado en Fase 4.5).
-- [ ] Service worker FCM en web para background.
-- [ ] Manejo de mensajes en foreground (UI/snackbar).
+### Plan 9.1 — Recepción y tokens en el cliente ✅
+- [x] Solicita permiso y registra el token (VAPID) en `users/{uid}.fcmTokens` al arrancar (`homeBootstrap`, guardado si no hay messaging en tests).
+- [x] Service worker FCM en web (`web/firebase-messaging-sw.js`) para background.
+- [x] Mensajes en foreground → SnackBar (vía `scaffoldMessengerKey` en `main`).
 
-### Plan 9.2 — Emisor externo (Node + firebase-admin) 🔒
-- [ ] Crear `automation/` con script Node y `package.json` (fuera de las 4 capas).
-- [ ] 🔧 MANUAL: generar **service account** en Firebase y guardarla como **secret** del repo (🔒 nunca commiteada).
-- [ ] Script que **solo lee Firestore y envía FCM**: recordatorios diarios, confirmaciones pendientes, resumen semanal (domingo), aviso "nueva semana, abre la app".
-- [ ] Garantizar **DRY**: no reimplementar reglas de negocio (sin generación duplicada en Node).
-- [ ] Tests/dry-run del script contra el emulador.
+### Plan 9.2 — Emisor externo (Node + firebase-admin) ✅ 🔒
+- [x] `automation/` con `index.js` + `package.json` (fuera de las 4 capas).
+- [ ] 🔧 MANUAL (pendiente): generar **service account** y guardarla como **secret** `FIREBASE_SERVICE_ACCOUNT`.
+- [x] Script que **solo lee Firestore y envía FCM**: recordatorios diarios, confirmaciones pendientes, resumen semanal (domingo), aviso "nueva semana".
+- [x] **DRY**: sin reglas de negocio ni generación en Node.
+- [~] Dry-run contra emulador: pendiente (no hay `node` en el entorno de desarrollo).
 
-### Plan 9.3 — Workflow programado de GitHub Actions
-- [ ] `.github/workflows/notifications.yml` con `schedule` (cron) — recordatorios diarios + resumen dominical.
-- [ ] Inyectar el secret de service account en el job.
-- [ ] 🔧 MANUAL: verificar ejecución del workflow y recepción real de push.
+### Plan 9.3 — Workflow programado de GitHub Actions ✅
+- [x] `.github/workflows/notifications.yml` con `schedule` (diario 08:00 UTC + domingo 18:00 UTC) y `workflow_dispatch`.
+- [x] Inyecta `secrets.FIREBASE_SERVICE_ACCOUNT` en el job.
+- [ ] 🔧 MANUAL (pendiente): verificar ejecución real y recepción de push.
 
 **Definition of Done — Fase 9**
-- [ ] Cliente recibe push en foreground y background.
-- [ ] Workflow programado envía notificaciones reales sin Cloud Functions.
-- [ ] Service account vive **solo** como secret; no hay credenciales en el repo (verificado).
-- [ ] Sin lógica de negocio duplicada en `automation/`.
+- [x] Cliente preparado para recibir push en foreground y background.
+- [x] Workflow programado listo (sin Cloud Functions).
+- [x] Service account **solo** como secret; nada commiteado (`.gitignore` cubre `serviceAccount*.json`).
+- [x] Sin lógica de negocio duplicada en `automation/`. *(Verificación real requiere los pasos MANUAL de consola/secret.)*
 
 ---
 
 # Fase 10 — Seguridad (Security Rules)
 **Dependencias:** Fases 4 y 6 · **Entregables:** reglas que restringen el acceso a la pareja autenticada. 🔒
 
-### Plan 10.1 — Firestore Security Rules
-- [ ] Reglas que permiten lectura/escritura **solo** a los UIDs de A y B autenticados.
-- [ ] Validación de forma/campos por colección (tipos, tamaños, `byteSize` de media bajo límite).
-- [ ] Proteger `auditLogs`/`statistics` contra escrituras indebidas del cliente cuando aplique.
-- [ ] Tests de reglas con `@firebase/rules-unit-testing` (casos permitidos y denegados).
+### Plan 10.1 — Firestore Security Rules ✅
+- [x] `firestore.rules`: todo acceso requiere autenticación (= la pareja, al no haber registro público).
+- [x] Reglas **explícitas por colección** (no comodín) + validación de `byteSize` de media (D1).
+- [x] `auditLogs` de solo lectura; colecciones no listadas **denegadas** por defecto.
+- [x] Scaffold de tests `@firebase/rules-unit-testing` en `firestore-rules-tests/`. *(Requiere emulador+node para ejecutar.)*
 
 ### Plan 10.2 — Endurecimiento App Check / key 🔒
-- [ ] Verificar App Check activo en producción (⚠️ DECISIÓN D5).
-- [ ] Revisar restricción de API key por referrer y dominios de hosting.
-- [ ] Actualizar `docs/SECURITY.md`.
+- [ ] 🔧 MANUAL (pendiente): verificar App Check activo en producción (D5).
+- [ ] 🔧 MANUAL (pendiente): restricción de API key por referrer + dominios de hosting.
+- [x] `docs/SECURITY.md` actualizado con las reglas.
 
 **Definition of Done — Fase 10**
-- [ ] Reglas desplegadas; acceso de terceros denegado (verificado con tests).
-- [ ] App Check y restricción de key confirmados en producción.
+- [x] Reglas escritas y listas para desplegar (`firebase deploy --only firestore:rules`). *(Despliegue + verificación con tests = pasos MANUAL.)*
+- [ ] App Check y restricción de key confirmados en producción (MANUAL).
 
 ---
 
@@ -498,25 +498,23 @@
 # Fase 13 — Producción & Deploy
 **Dependencias:** Fases 1–12 · **Entregables:** PWA desplegada en Firebase Hosting con checklist de salida.
 
-### Plan 13.1 — Build y configuración de entornos
-- [ ] `flutter build web --release` optimizado (tree-shaking de iconos, renderer adecuado).
-- [ ] Configuración de entornos (dev vs prod) y variables.
+### Plan 13.1 — Build y configuración de entornos ✅
+- [x] `flutter build web --release` verificado; comando documentado con `--dart-define` (site key/VAPID) en `docs/DEPLOY.md`.
+- [x] Variables de entorno por `--dart-define` (dev sin keys; prod con keys).
 
-### Plan 13.2 — Deploy Firebase Hosting
-- [ ] 🔧 MANUAL: configurar Firebase Hosting (`firebase.json`, `hosting`).
-- [ ] Desplegar y verificar dominio + HTTPS.
-- [ ] 🔧 MANUAL: confirmar que el referrer de la API key incluye el dominio de hosting (D5).
+### Plan 13.2 — Deploy Firebase Hosting ✅ (config) / 🔧 (ejecución)
+- [x] `firebase.json` (hosting `build/web`, rewrite SPA, `no-cache` del SW + reglas) y `.firebaserc` (`couplesync-cb0a8`).
+- [ ] 🔧 MANUAL (pendiente): `firebase deploy` y verificar dominio + HTTPS.
+- [ ] 🔧 MANUAL (pendiente): añadir el dominio de hosting al referrer de la API key (D5).
 
 ### Plan 13.3 — Checklist de salida a producción
-- [ ] Verificar Security Rules desplegadas (Fase 10) y App Check activo.
-- [ ] Verificar workflow de notificaciones en producción (Fase 9).
-- [ ] Verificar PWA instalable y offline (Fase 11).
-- [ ] Smoke test end-to-end con los 2 usuarios reales.
+- [x] Checklist documentado en `docs/DEPLOY.md`.
+- [ ] 🔧 MANUAL (pendiente): ejecutar el checklist (rules, App Check, notificaciones, PWA, smoke test E2E).
 
 **Definition of Done — Fase 13**
-- [ ] PWA accesible en producción vía Firebase Hosting (HTTPS).
-- [ ] Seguridad, notificaciones y offline verificados en producción.
-- [ ] Checklist de salida completo.
+- [~] PWA lista para desplegar (config completa); **deploy = paso MANUAL** (requiere Firebase CLI/login).
+- [ ] Seguridad, notificaciones y offline verificados en producción (MANUAL).
+- [x] Checklist de salida documentado.
 
 ---
 

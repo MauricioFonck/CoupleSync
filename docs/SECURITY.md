@@ -36,3 +36,14 @@ La key web va embebida en el cliente; **no** es un secreto. La protección real 
 ## Sin Cloud Storage / sin Cloud Functions
 El proyecto se mantiene en **plan Spark**. No se inicializa Firebase Storage ni se usan
 Cloud Functions (ver `docs/ROADMAP.md`, decisiones D1–D6).
+
+## Firestore Security Rules
+Definidas en `firestore.rules` (desplegadas con `firebase deploy --only firestore:rules`):
+- Todo acceso requiere `request.auth != null`. Como **no hay registro público**, solo A
+  y B existen en Auth, por lo que esto restringe el acceso a la pareja.
+- Reglas **explícitas por colección** (no comodín) para que las validaciones no se eludan.
+- `media`: valida `byteSize` (> 0 y ≤ 1 MiB) en escritura (D1).
+- `auditLogs`: solo lectura desde el cliente.
+- Colecciones no listadas: **denegadas** por defecto.
+- Tests en `firestore-rules-tests/` (requieren Firebase Emulator + Node).
+

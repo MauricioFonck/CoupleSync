@@ -1,0 +1,16 @@
+{
+  "name": "couplesync-firestore-rules-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tests de las Security Rules de Firestore (requieren el Firebase Emulator + Node).",
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore \"node --test\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1"
+  }
+}

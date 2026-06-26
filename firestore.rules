@@ -1,0 +1,84 @@
+rules_version = '2';
+
+// Security Rules de CoupleSync.
+//
+// La app es privada para 2 usuarios (A y B) predefinidos en Firebase Auth; no hay
+// registro público, así que "estar autenticado" equivale a "ser de la pareja". La
+// protección se refuerza con App Check + restricción de API key por referrer (D5).
+//
+// Nota: las reglas se OR-ean entre match; por eso enumeramos cada colección en
+// lugar de un comodín, para que las validaciones (p. ej. tamaño de media) no se
+// puedan eludir por una regla más permisiva.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function maxMediaBytes() {
+      return 1000000; // < 1 MiB (límite de documento Firestore) — D1
+    }
+
+    match /users/{userId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /activities/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /penalties/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /availability/{userId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /weeklySchedules/{weekId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /scheduledEvents/{eventId} {
+      allow read, write: if isSignedIn();
+
+      match /confirmations/{confirmationId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    match /statistics/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /settings/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /notifications/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Media: blob Base64 en colección separada (D1). Se valida el tamaño en
+    // escritura para no superar el límite del documento.
+    match /media/{mediaId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn()
+        && request.resource.data.byteSize is int
+        && request.resource.data.byteSize > 0
+        && request.resource.data.byteSize <= maxMediaBytes();
+    }
+
+    // Registro de auditoría: el cliente solo lee; no escribe.
+    match /auditLogs/{id} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // Todo lo demás: denegado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

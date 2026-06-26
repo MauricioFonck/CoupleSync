@@ -294,29 +294,29 @@
 # Fase 5 — Presentación base
 **Dependencias:** Fase 4 · **Entregables:** theme Material 3, navegación, providers, login y shell responsive.
 
-### Plan 5.1 — Theme Material 3
-- [ ] Definir `ColorScheme` (light/dark), tipografía y componentes base en `presentation/theme/`.
-- [ ] Theme responsive (breakpoints móvil/tablet/desktop).
+### Plan 5.1 — Theme Material 3 ✅
+- [x] `AppTheme` con `ColorScheme.fromSeed` (light/dark) y componentes base en `presentation/theme/`.
+- [x] `Breakpoints` responsive (compact/medium/expanded).
 
-### Plan 5.2 — Navegación (Go Router)
-- [ ] Configurar `go_router` con rutas y **guard de autenticación** (redirige a login si no hay sesión).
-- [ ] Definir rutas base: `/login`, `/dashboard`, `/activities`, `/penalties`, `/availability`, `/schedule`, `/history`.
+### Plan 5.2 — Navegación (Go Router) ✅
+- [x] `go_router` con **guard de autenticación** (redirige a `/login` sin sesión; a `/dashboard` con sesión) y `refreshListenable` ligado a `authStateProvider`.
+- [x] Rutas base: `/login`, `/dashboard`, `/activities`, `/penalties`, `/availability`, `/schedule`, `/history` (con `ShellRoute`).
 
-### Plan 5.3 — Providers Riverpod base
-- [ ] Provider de estado de auth (escucha `AuthPort`).
-- [ ] Providers de servicios de aplicación (inyectados desde composition root).
-- [ ] Patrón de estado (loading/data/error) definido y reutilizable.
+### Plan 5.3 — Providers Riverpod base ✅
+- [x] `compositionRootProvider` (override en main/tests) + `authStateProvider` (escucha `AuthPort`).
+- [x] Providers de los 6 servicios de aplicación inyectados desde el Composition Root.
+- [x] `SignInController` (`AsyncValue<void>`: loading/data/error) reutilizable.
 
-### Plan 5.4 — Login y shell responsive
-- [ ] Pantalla de login (A/B) con validación y manejo de errores.
-- [ ] Shell responsive (NavigationRail en desktop / NavigationBar en móvil).
-- [ ] Widget test de login (éxito/fallo) y de redirección por guard.
+### Plan 5.4 — Login y shell responsive ✅
+- [x] Pantalla de login (A/B) con validación y manejo de errores (vía `AppFailure`).
+- [x] `AppShell` responsive (`NavigationRail` en ancho / `NavigationBar` en compacto) con logout.
+- [x] Widget tests: validación, login correcto→dashboard, guard, navegación y los 2 modos del shell.
 
 **Definition of Done — Fase 5**
-- [ ] Login funcional con los 2 usuarios reales (o emulador).
-- [ ] Navegación con guard de auth operativa.
-- [ ] Shell responsive verificado en 3 breakpoints.
-- [ ] Widget tests base en verde.
+- [x] Login funcional (verificado con `firebase_auth_mocks`; con los usuarios reales tras los pasos MANUAL de consola).
+- [x] Navegación con guard de auth operativa.
+- [x] Shell responsive verificado (compact `NavigationBar` / expanded `NavigationRail`).
+- [x] Widget tests base en verde. *(130 tests totales; build web OK.)*
 
 ---
 

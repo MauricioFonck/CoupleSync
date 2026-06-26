@@ -1,19 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'firebase_options.dart';
+import 'infrastructure/composition_root.dart';
+import 'presentation/providers/app_providers.dart';
+import 'presentation/routes/app_router.dart';
+import 'presentation/theme/app_theme.dart';
 
-/// reCAPTCHA v3 site key for Firebase App Check (web).
-///
-/// Se inyecta en build/run para no commitearla:
-///   flutter run -d chrome --dart-define=RECAPTCHA_V3_SITE_KEY=xxxx
-///
-/// Por defecto vacía, de modo que la app arranca en desarrollo sin que App
-/// Check bloquee el inicio (ver Plan 1.6 y docs/SECURITY.md).
+/// reCAPTCHA v3 site key para App Check (web). Se inyecta vía
+/// `--dart-define=RECAPTCHA_V3_SITE_KEY=...` (ver docs/SECURITY.md).
 const String _recaptchaV3SiteKey =
     String.fromEnvironment('RECAPTCHA_V3_SITE_KEY');
+
+/// VAPID key para tokens FCM web (opcional). `--dart-define=FCM_VAPID_KEY=...`.
+const String _fcmVapidKey = String.fromEnvironment('FCM_VAPID_KEY');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,62 +27,45 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // App Check solo se activa cuando hay site key, para no bloquear el arranque
-  // local. En producción la key se inyecta vía --dart-define.
   if (_recaptchaV3SiteKey.isNotEmpty) {
     await FirebaseAppCheck.instance.activate(
       providerWeb: ReCaptchaV3Provider(_recaptchaV3SiteKey),
     );
   }
 
-  runApp(const ProviderScope(child: CoupleSyncApp()));
+  // Persistencia offline (IndexedDB en web) — D4.
+  FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: true);
+
+  final compositionRoot = CompositionRoot(
+    firestore: FirebaseFirestore.instance,
+    auth: FirebaseAuth.instance,
+    messaging: FirebaseMessaging.instance,
+    fcmVapidKey: _fcmVapidKey.isEmpty ? null : _fcmVapidKey,
+  );
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        compositionRootProvider.overrideWithValue(compositionRoot),
+      ],
+      child: const CoupleSyncApp(),
+    ),
+  );
 }
 
-/// Root widget. El theme Material 3 definitivo, el router y los providers se
-/// construyen en la Fase 5; aquí solo hay un scaffolding mínimo (Plan 1.7).
-class CoupleSyncApp extends StatelessWidget {
+class CoupleSyncApp extends ConsumerWidget {
   const CoupleSyncApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    return MaterialApp.router(
       title: 'CoupleSync',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFE91E63)),
-        useMaterial3: true,
-      ),
-      home: const _BootstrapScreen(),
-    );
-  }
-}
-
-class _BootstrapScreen extends StatelessWidget {
-  const _BootstrapScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.favorite,
-              size: 64,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
-            Text('CoupleSync', style: theme.textTheme.headlineMedium),
-            const SizedBox(height: 8),
-            Text(
-              'Fase 1 — scaffolding inicial',
-              style: theme.textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      ),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      routerConfig: router,
     );
   }
 }

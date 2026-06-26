@@ -1,6 +1,7 @@
 import 'package:couplesync/infrastructure/composition_root.dart';
 import 'package:couplesync/main.dart';
 import 'package:couplesync/presentation/providers/app_providers.dart';
+import 'package:couplesync/presentation/providers/connectivity_provider.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,7 @@ Future<MockFirebaseAuth> pumpApp(
   WidgetTester tester, {
   required MockFirebaseAuth auth,
   FakeFirebaseFirestore? firestore,
+  bool online = true,
 }) async {
   final root = CompositionRoot(
     firestore: firestore ?? FakeFirebaseFirestore(),
@@ -25,7 +27,10 @@ Future<MockFirebaseAuth> pumpApp(
 
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [compositionRootProvider.overrideWithValue(root)],
+      overrides: [
+        compositionRootProvider.overrideWithValue(root),
+        isOnlineProvider.overrideWithValue(online),
+      ],
       child: const CoupleSyncApp(),
     ),
   );

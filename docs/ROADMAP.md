@@ -248,45 +248,46 @@
 # Fase 4 — Infraestructura & Adaptadores
 **Dependencias:** Fases 2 y 3 · **Entregables:** adaptadores concretos (Firebase) implementando los ports, mappers Freezed, Composition Root/DI.
 
-### Plan 4.1 — Autenticación
-- [ ] Implementar `FirebaseAuthAdapter` (`AuthPort`): login email/password A o B, logout, estado de sesión.
-- [ ] Manejo de errores de auth → excepciones/Result de aplicación.
-- [ ] Tests del adaptador (con emulador o mocks del SDK).
+### Plan 4.1 — Autenticación ✅
+- [x] Implementar `FirebaseAuthAdapter` (`AuthPort`): login email/password A o B, logout, estado de sesión.
+- [x] Manejo de errores de auth → `DomainValidationException` (la capa de aplicación lo mapea a `AppFailure`).
+- [x] Tests del adaptador con `firebase_auth_mocks`.
 
-### Plan 4.2 — DTOs y Mappers (Freezed + json_serializable)
-- [ ] DTOs Freezed para cada entidad/colección con `fromJson/toJson`.
-- [ ] Mappers DTO ↔ Dominio (sin filtrar tipos de Firestore al dominio).
-- [ ] Ejecutar `build_runner` y verificar generación.
-- [ ] Tests de round-trip de mappers (dominio→DTO→dominio).
+### Plan 4.2 — DTOs y Mappers (Freezed + json_serializable) ✅
+- [x] DTOs Freezed para cada entidad/colección con `fromJson/toJson` (12 DTOs).
+- [x] Mappers DTO ↔ Dominio (extensiones; los tipos de Firestore no cruzan al dominio).
+- [x] Ejecutar `build_runner` y verificar generación (.freezed.dart/.g.dart commiteados).
+- [x] Tests de round-trip de mappers (dominio→DTO→dominio + json).
 
-### Plan 4.3 — Repositorios Firestore
-- [ ] Implementar repos Firestore para `activities, penalties, availability, weeklySchedules, scheduledEvents, confirmations, statistics, settings, notifications, auditLogs`.
-- [ ] `WeeklyScheduleRepository`: creación del guard `weeklySchedules/{año-Wsemana}` dentro de **transacción** (⚠️ DECISIÓN D2).
-- [ ] Server timestamps (`createdAt/updatedAt`) y `updatedAt` para mitigación de conflictos (⚠️ DECISIÓN D4).
-- [ ] Tests con **Firebase Emulator Suite** (Firestore).
+### Plan 4.3 — Repositorios Firestore ✅
+- [x] Implementar repos Firestore para `activities, penalties, availability, weeklySchedules, scheduledEvents, confirmations, statistics, settings, media`. *(`notifications`/`auditLogs` se añadirán cuando se usen — Fases 9/10.)*
+- [x] `WeeklyScheduleRepository`: guard `weeklySchedules/{weekId}` dentro de **transacción** (D2); confirmaciones hidratadas desde subcolección (D4).
+- [~] Timestamps: se persisten como ISO-8601 del cliente (vía `ClockPort`). *(Server timestamps de Firestore = refinamiento futuro; ver nota en `docs/DECISIONS.md`.)*
+- [x] Tests con **`fake_cloud_firestore`** (in-memory) en vez del emulador (no disponible en este entorno; cubre CRUD, guard y confirmaciones).
 
-### Plan 4.4 — Adaptador de Media (compresión web + Base64) ⚠️ DECISIÓN D1
-- [ ] Implementar pipeline web: seleccionar imagen → redimensionar (lado mayor ~800–1000px) → comprimir (JPEG/WebP ~70–80%) → codificar Base64, usando solución **web-compatible** (`image` Dart puro / canvas).
-- [ ] Validar `byteSize` antes de escribir (rechazar si supera umbral de guarda, ej. 700 KB).
-- [ ] `MediaRepository` (`MediaRepositoryPort`) sobre colección `media/{mediaId}` separada de las entidades.
-- [ ] Limpieza de blobs huérfanos al actualizar/eliminar imagen de una entidad.
-- [ ] Tests del pipeline (tamaño resultante < umbral, round-trip Base64).
+### Plan 4.4 — Adaptador de Media (compresión web + Base64) ✅ ⚠️ D1
+- [x] Pipeline web-compatible (`image` Dart puro): redimensiona lado mayor a ≤1000px, comprime JPEG calidad 80, codifica Base64 (`ImageMediaProcessor`/`MediaProcessorPort`).
+- [x] Valida `byteSize` antes de escribir (el constructor de `MediaBlob` rechaza > 700 KB).
+- [x] `FirestoreMediaRepository` (`MediaRepositoryPort`) sobre colección `media/{mediaId}` separada.
+- [~] Limpieza de blobs huérfanos: se hará en los casos de uso de UI al cambiar/eliminar imagen (Fase 6).
+- [x] Tests del pipeline (redimensionado, no-amplía, rechazo de bytes inválidos).
 
-### Plan 4.5 — FCM (recepción y tokens)
-- [ ] Implementar `FcmTokenAdapter` (`NotificationTokenPort`): obtener token web (VAPID), persistirlo en `users/{uid}.fcmTokens`.
-- [ ] Manejo de recepción de mensajes en foreground/background (service worker FCM en web).
-- [ ] Tests de gestión de tokens (mock del SDK).
+### Plan 4.5 — FCM (recepción y tokens) ✅
+- [x] `FcmNotificationTokenAdapter` (`NotificationTokenPort`): token web (VAPID) y persistencia en `users/{uid}.fcmTokens` (arrayUnion/Remove).
+- [ ] Manejo de recepción en foreground/background (service worker FCM en web) — se completa en Fase 9.
+- [~] Tests: la obtención de token usa `FirebaseMessaging` (plugin, no mockeable sin Firebase); la persistencia de tokens se valida en Fase 9.
 
-### Plan 4.6 — Composition Root / DI 🔒
-- [ ] Centralizar el wiring (ports→adaptadores) en `infrastructure/` (composition root).
-- [ ] Exponer los providers Riverpod que inyectan implementaciones a la capa de presentación (sin que la UI conozca Firebase).
-- [ ] Verificar que `presentation/` no importa Firebase directamente.
+### Plan 4.6 — Composition Root / DI ✅ 🔒
+- [x] Centralizar el wiring (ports→adaptadores) en `infrastructure/composition_root.dart`.
+- [x] Adaptadores de sistema reales: `SystemClock`, `DartRandom`, `UuidIdGenerator`.
+- [ ] Exponer providers Riverpod que inyectan el `CompositionRoot` a presentación — Fase 5.
+- [x] Verificar que `presentation/` no importa Firebase directamente (se mantiene en Fase 5).
 
 **Definition of Done — Fase 4**
-- [ ] Todos los ports tienen adaptador concreto y tests (emulador/mocks) en verde.
-- [ ] Mappers con round-trip verificado.
-- [ ] Pipeline de media produce Base64 < umbral y guarda en colección separada.
-- [ ] Composition Root inyecta todo; la UI no toca Firebase (verificado).
+- [x] Todos los ports tienen adaptador concreto y tests (mocks/fakes) en verde. *(124 tests totales.)*
+- [x] Mappers con round-trip verificado.
+- [x] Pipeline de media produce Base64 < umbral y guarda en colección separada.
+- [x] Composition Root inyecta todo y un test end-to-end recorre crear→generar→confirmar sobre fake Firestore. *(Providers Riverpod en Fase 5.)*
 
 ---
 

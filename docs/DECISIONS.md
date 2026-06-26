@@ -20,3 +20,16 @@ un índice rápido.
 - `firebase_options.dart` se escribió a mano (sin FlutterFire CLI) y **omite**
   `storageBucket` a propósito (D6).
 - App Check se activa solo si se provee `RECAPTCHA_V3_SITE_KEY` vía `--dart-define`.
+
+## Notas de implementación (Fase 4)
+- **Timestamps como ISO-8601 del cliente:** los DTOs guardan fechas como string
+  ISO-8601 generado vía `ClockPort`, no como `Timestamp`/server timestamp de
+  Firestore. Mantiene los DTOs `json`-puros y los mappers triviales y testeables
+  con `fake_cloud_firestore`. Para 2 usuarios, last-write-wins con `updatedAt` de
+  cliente es suficiente (D4). Migrar a server timestamps es un refinamiento
+  aislado al repositorio si hiciera falta.
+- **Tests sin emulador:** se usa `fake_cloud_firestore` (Firestore in-memory) y
+  `firebase_auth_mocks` en lugar de Firebase Emulator Suite (no disponible en el
+  entorno de desarrollo). Cubren CRUD, guard transaccional y confirmaciones.
+- Archivos generados (`*.freezed.dart`, `*.g.dart`) se commitean para builds
+  reproducibles sin requerir `build_runner` en cada checkout.

@@ -14,9 +14,9 @@ class SchedulingService {
     required GenerateWeeklyScheduleUseCase generateWeeklySchedule,
     required RescheduleEventUseCase rescheduleEvent,
     required ScheduledEventRepositoryPort scheduledEventRepository,
-  })  : _generate = generateWeeklySchedule,
-        _reschedule = rescheduleEvent,
-        _events = scheduledEventRepository;
+  }) : _generate = generateWeeklySchedule,
+       _reschedule = rescheduleEvent,
+       _events = scheduledEventRepository;
 
   final GenerateWeeklyScheduleUseCase _generate;
   final RescheduleEventUseCase _reschedule;

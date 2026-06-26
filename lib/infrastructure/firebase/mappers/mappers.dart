@@ -31,120 +31,117 @@ import '../dtos/weekly_schedule_dto.dart';
 // --- Activity ---
 extension ActivityDtoMapper on ActivityDto {
   Activity toDomain() => Activity(
-        id: ActivityId(id),
-        title: title,
-        description: description,
-        category: ActivityCategory(category),
-        createdBy: UserId(createdBy),
-        active: active,
-        imageId: imageId == null ? null : MediaId(imageId!),
-        createdAt: DateTime.parse(createdAt),
-        updatedAt: DateTime.parse(updatedAt),
-      );
+    id: ActivityId(id),
+    title: title,
+    description: description,
+    category: ActivityCategory(category),
+    createdBy: UserId(createdBy),
+    active: active,
+    imageId: imageId == null ? null : MediaId(imageId!),
+    createdAt: DateTime.parse(createdAt),
+    updatedAt: DateTime.parse(updatedAt),
+  );
 }
 
 extension ActivityMapper on Activity {
   ActivityDto toDto() => ActivityDto(
-        id: id.value,
-        title: title,
-        description: description,
-        category: category.value,
-        createdBy: createdBy.value,
-        active: active,
-        imageId: imageId?.value,
-        createdAt: createdAt.toIso8601String(),
-        updatedAt: updatedAt.toIso8601String(),
-      );
+    id: id.value,
+    title: title,
+    description: description,
+    category: category.value,
+    createdBy: createdBy.value,
+    active: active,
+    imageId: imageId?.value,
+    createdAt: createdAt.toIso8601String(),
+    updatedAt: updatedAt.toIso8601String(),
+  );
 }
 
 // --- Penalty ---
 extension PenaltyDtoMapper on PenaltyDto {
   Penalty toDomain() => Penalty(
-        id: PenaltyId(id),
-        title: title,
-        description: description,
-        severity: Severity.values.byName(severity),
-        active: active,
-        imageId: imageId == null ? null : MediaId(imageId!),
-      );
+    id: PenaltyId(id),
+    title: title,
+    description: description,
+    severity: Severity.values.byName(severity),
+    active: active,
+    imageId: imageId == null ? null : MediaId(imageId!),
+  );
 }
 
 extension PenaltyMapper on Penalty {
   PenaltyDto toDto() => PenaltyDto(
-        id: id.value,
-        title: title,
-        description: description,
-        severity: severity.name,
-        active: active,
-        imageId: imageId?.value,
-      );
+    id: id.value,
+    title: title,
+    description: description,
+    severity: severity.name,
+    active: active,
+    imageId: imageId?.value,
+  );
 }
 
 // --- Availability ---
 extension AvailabilityDtoMapper on AvailabilityDto {
   Availability toDomain() => Availability(
-        userId: UserId(userId),
-        availableWeekdays: availableWeekdays.toSet(),
-        slotsByWeekday: slotsByWeekday.map(
-          (k, v) => MapEntry(
-            int.parse(k),
-            v
-                .map(
-                  (s) => TimeSlot(
-                    startMinutes: s.startMinutes,
-                    endMinutes: s.endMinutes,
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        blockedDates: blockedDates.map(DateTime.parse).toSet(),
-        unavailablePeriods: unavailablePeriods
+    userId: UserId(userId),
+    availableWeekdays: availableWeekdays.toSet(),
+    slotsByWeekday: slotsByWeekday.map(
+      (k, v) => MapEntry(
+        int.parse(k),
+        v
             .map(
-              (r) => DateRange(
-                start: DateTime.parse(r.start),
-                end: DateTime.parse(r.end),
+              (s) => TimeSlot(
+                startMinutes: s.startMinutes,
+                endMinutes: s.endMinutes,
               ),
             )
             .toList(),
-      );
+      ),
+    ),
+    blockedDates: blockedDates.map(DateTime.parse).toSet(),
+    unavailablePeriods: unavailablePeriods
+        .map(
+          (r) => DateRange(
+            start: DateTime.parse(r.start),
+            end: DateTime.parse(r.end),
+          ),
+        )
+        .toList(),
+  );
 }
 
 extension AvailabilityMapper on Availability {
   AvailabilityDto toDto() => AvailabilityDto(
-        userId: userId.value,
-        availableWeekdays: availableWeekdays.toList(),
-        slotsByWeekday: slotsByWeekday.map(
-          (k, v) => MapEntry(
-            k.toString(),
-            v
-                .map(
-                  (s) => TimeSlotDto(
-                    startMinutes: s.startMinutes,
-                    endMinutes: s.endMinutes,
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        blockedDates:
-            blockedDates.map((d) => d.toIso8601String()).toList(),
-        unavailablePeriods: unavailablePeriods
+    userId: userId.value,
+    availableWeekdays: availableWeekdays.toList(),
+    slotsByWeekday: slotsByWeekday.map(
+      (k, v) => MapEntry(
+        k.toString(),
+        v
             .map(
-              (r) => DateRangeDto(
-                start: r.start.toIso8601String(),
-                end: r.end.toIso8601String(),
+              (s) => TimeSlotDto(
+                startMinutes: s.startMinutes,
+                endMinutes: s.endMinutes,
               ),
             )
             .toList(),
-      );
+      ),
+    ),
+    blockedDates: blockedDates.map((d) => d.toIso8601String()).toList(),
+    unavailablePeriods: unavailablePeriods
+        .map(
+          (r) => DateRangeDto(
+            start: r.start.toIso8601String(),
+            end: r.end.toIso8601String(),
+          ),
+        )
+        .toList(),
+  );
 }
 
 // --- ScheduledEvent (confirmaciones aparte, ver D4) ---
 extension ScheduledEventDtoMapper on ScheduledEventDto {
-  ScheduledEvent toDomain({
-    List<Confirmation> confirmations = const [],
-  }) =>
+  ScheduledEvent toDomain({List<Confirmation> confirmations = const []}) =>
       ScheduledEvent(
         id: ScheduledEventId(id),
         date: DateTime.parse(date),
@@ -159,111 +156,111 @@ extension ScheduledEventDtoMapper on ScheduledEventDto {
 
 extension ScheduledEventMapper on ScheduledEvent {
   ScheduledEventDto toDto() => ScheduledEventDto(
-        id: id.value,
-        date: date.toIso8601String(),
-        weekId: weekId.value,
-        activityIds: activityIds.map((a) => a.value).toList(),
-        status: status.name,
-        notes: notes,
-        createdAt: createdAt.toIso8601String(),
-      );
+    id: id.value,
+    date: date.toIso8601String(),
+    weekId: weekId.value,
+    activityIds: activityIds.map((a) => a.value).toList(),
+    status: status.name,
+    notes: notes,
+    createdAt: createdAt.toIso8601String(),
+  );
 }
 
 // --- Confirmation ---
 extension ConfirmationDtoMapper on ConfirmationDto {
   Confirmation toDomain() => Confirmation(
-        userId: UserId(userId),
-        activityId: ActivityId(activityId),
-        status: ConfirmationStatus.values.byName(status),
-      );
+    userId: UserId(userId),
+    activityId: ActivityId(activityId),
+    status: ConfirmationStatus.values.byName(status),
+  );
 }
 
 extension ConfirmationMapper on Confirmation {
   ConfirmationDto toDto() => ConfirmationDto(
-        userId: userId.value,
-        activityId: activityId.value,
-        status: status.name,
-      );
+    userId: userId.value,
+    activityId: activityId.value,
+    status: status.name,
+  );
 }
 
 // --- WeeklySchedule ---
 extension WeeklyScheduleDtoMapper on WeeklyScheduleDto {
   WeeklySchedule toDomain() => WeeklySchedule(
-        weekId: WeekId(weekId),
-        eventIds: eventIds.map(ScheduledEventId.new).toList(),
-        generatedAt: DateTime.parse(generatedAt),
-      );
+    weekId: WeekId(weekId),
+    eventIds: eventIds.map(ScheduledEventId.new).toList(),
+    generatedAt: DateTime.parse(generatedAt),
+  );
 }
 
 extension WeeklyScheduleMapper on WeeklySchedule {
   WeeklyScheduleDto toDto() => WeeklyScheduleDto(
-        weekId: weekId.value,
-        eventIds: eventIds.map((e) => e.value).toList(),
-        generatedAt: generatedAt.toIso8601String(),
-      );
+    weekId: weekId.value,
+    eventIds: eventIds.map((e) => e.value).toList(),
+    generatedAt: generatedAt.toIso8601String(),
+  );
 }
 
 // --- MediaBlob ---
 extension MediaBlobDtoMapper on MediaBlobDto {
   MediaBlob toDomain() => MediaBlob(
-        id: MediaId(id),
-        base64: base64,
-        mime: mime,
-        width: width,
-        height: height,
-        byteSize: byteSize,
-        createdBy: UserId(createdBy),
-        createdAt: DateTime.parse(createdAt),
-      );
+    id: MediaId(id),
+    base64: base64,
+    mime: mime,
+    width: width,
+    height: height,
+    byteSize: byteSize,
+    createdBy: UserId(createdBy),
+    createdAt: DateTime.parse(createdAt),
+  );
 }
 
 extension MediaBlobMapper on MediaBlob {
   MediaBlobDto toDto() => MediaBlobDto(
-        id: id.value,
-        base64: base64,
-        mime: mime,
-        width: width,
-        height: height,
-        byteSize: byteSize,
-        createdBy: createdBy.value,
-        createdAt: createdAt.toIso8601String(),
-      );
+    id: id.value,
+    base64: base64,
+    mime: mime,
+    width: width,
+    height: height,
+    byteSize: byteSize,
+    createdBy: createdBy.value,
+    createdAt: createdAt.toIso8601String(),
+  );
 }
 
 // --- StreakStats ---
 extension StreakStatsDtoMapper on StreakStatsDto {
   StreakStats toDomain() => StreakStats(
-        currentStreak: currentStreak,
-        bestStreak: bestStreak,
-        weeklyCompletionRate: weeklyCompletionRate,
-        monthlyCompletionRate: monthlyCompletionRate,
-        yearlyCompletionRate: yearlyCompletionRate,
-      );
+    currentStreak: currentStreak,
+    bestStreak: bestStreak,
+    weeklyCompletionRate: weeklyCompletionRate,
+    monthlyCompletionRate: monthlyCompletionRate,
+    yearlyCompletionRate: yearlyCompletionRate,
+  );
 }
 
 extension StreakStatsMapper on StreakStats {
   StreakStatsDto toDto() => StreakStatsDto(
-        currentStreak: currentStreak,
-        bestStreak: bestStreak,
-        weeklyCompletionRate: weeklyCompletionRate,
-        monthlyCompletionRate: monthlyCompletionRate,
-        yearlyCompletionRate: yearlyCompletionRate,
-      );
+    currentStreak: currentStreak,
+    bestStreak: bestStreak,
+    weeklyCompletionRate: weeklyCompletionRate,
+    monthlyCompletionRate: monthlyCompletionRate,
+    yearlyCompletionRate: yearlyCompletionRate,
+  );
 }
 
 // --- SchedulingConfig ---
 extension SchedulingConfigDtoMapper on SchedulingConfigDto {
   SchedulingConfig toDomain() => SchedulingConfig(
-        daysPerWeek: daysPerWeek,
-        activitiesPerDay: activitiesPerDay,
-      );
+    daysPerWeek: daysPerWeek,
+    activitiesPerDay: activitiesPerDay,
+  );
 }
 
 extension SchedulingConfigMapper on SchedulingConfig {
   SchedulingConfigDto toDto() => SchedulingConfigDto(
-        daysPerWeek: daysPerWeek,
-        activitiesPerDay: activitiesPerDay,
-      );
+    daysPerWeek: daysPerWeek,
+    activitiesPerDay: activitiesPerDay,
+  );
 }
 
 // --- User ---

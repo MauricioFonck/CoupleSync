@@ -24,9 +24,9 @@ void main() {
   setUp(() => events = InMemoryScheduledEventRepository());
 
   CalculateStreaksUseCase build(DateTime now) => CalculateStreaksUseCase(
-        scheduledEventRepository: events,
-        clock: FakeClock(now),
-      );
+    scheduledEventRepository: events,
+    clock: FakeClock(now),
+  );
 
   test('racha actual cuenta completados consecutivos al final', () async {
     final now = DateTime.utc(2026, 6, 30);
@@ -64,10 +64,14 @@ void main() {
   test('tasas de cumplimiento por ventana', () async {
     final now = DateTime.utc(2026, 6, 30);
     // En los últimos 7 días: 1 completado, 1 fallado => 0.5.
-    events.store['c'] =
-        event(DateTime.utc(2026, 6, 28), CompletionStatus.completed);
-    events.store['m'] =
-        event(DateTime.utc(2026, 6, 27), CompletionStatus.missed);
+    events.store['c'] = event(
+      DateTime.utc(2026, 6, 28),
+      CompletionStatus.completed,
+    );
+    events.store['m'] = event(
+      DateTime.utc(2026, 6, 27),
+      CompletionStatus.missed,
+    );
 
     final stats = await build(now).execute();
     expect(stats.weeklyCompletionRate, 0.5);

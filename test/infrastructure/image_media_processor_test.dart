@@ -10,11 +10,11 @@ void main() {
   final userA = UserId('A');
 
   ImageMediaProcessor processor() => ImageMediaProcessor(
-        idGenerator: SeqIdGenerator(),
-        clock: FakeClock(DateTime.utc(2026, 6, 21)),
-        maxDimension: 1000,
-        quality: 80,
-      );
+    idGenerator: SeqIdGenerator(),
+    clock: FakeClock(DateTime.utc(2026, 6, 21)),
+    maxDimension: 1000,
+    quality: 80,
+  );
 
   test('redimensiona el lado mayor a maxDimension y codifica JPEG/Base64', () {
     final source = img.Image(width: 2000, height: 1000);

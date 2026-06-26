@@ -10,8 +10,7 @@ class GetAvailabilityUseCase {
 
   final AvailabilityRepositoryPort _repository;
 
-  Future<Availability> execute(UserId userId) =>
-      _repository.getForUser(userId);
+  Future<Availability> execute(UserId userId) => _repository.getForUser(userId);
 }
 
 /// Guarda/actualiza la disponibilidad de un usuario.

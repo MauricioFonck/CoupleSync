@@ -26,15 +26,14 @@ final class Penalty {
     bool? active,
     MediaId? imageId,
     bool clearImage = false,
-  }) =>
-      Penalty(
-        id: id,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        severity: severity ?? this.severity,
-        active: active ?? this.active,
-        imageId: clearImage ? null : (imageId ?? this.imageId),
-      );
+  }) => Penalty(
+    id: id,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    severity: severity ?? this.severity,
+    active: active ?? this.active,
+    imageId: clearImage ? null : (imageId ?? this.imageId),
+  );
 
   @override
   bool operator ==(Object other) =>

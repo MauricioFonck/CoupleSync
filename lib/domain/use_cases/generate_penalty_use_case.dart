@@ -9,8 +9,8 @@ class GeneratePenaltyUseCase {
   const GeneratePenaltyUseCase({
     required PenaltyRepositoryPort penaltyRepository,
     required RandomPort random,
-  })  : _repository = penaltyRepository,
-        _random = random;
+  }) : _repository = penaltyRepository,
+       _random = random;
 
   final PenaltyRepositoryPort _repository;
   final RandomPort _random;

@@ -73,8 +73,7 @@ class CompositionRoot {
 
     // Adaptadores de servicio.
     authPort = FirebaseAuthAdapter(auth);
-    mediaProcessor =
-        ImageMediaProcessor(idGenerator: idGen, clock: clockPort);
+    mediaProcessor = ImageMediaProcessor(idGenerator: idGen, clock: clockPort);
     notificationTokenPort = messaging == null
         ? null
         : FcmNotificationTokenAdapter(
@@ -118,10 +117,12 @@ class CompositionRoot {
     );
 
     availabilityService = AvailabilityService(
-      getAvailability:
-          GetAvailabilityUseCase(availabilityRepository: availability),
-      setAvailability:
-          SetAvailabilityUseCase(availabilityRepository: availability),
+      getAvailability: GetAvailabilityUseCase(
+        availabilityRepository: availability,
+      ),
+      setAvailability: SetAvailabilityUseCase(
+        availabilityRepository: availability,
+      ),
     );
 
     schedulingService = SchedulingService(
@@ -133,8 +134,9 @@ class CompositionRoot {
         clock: clockPort,
         random: randomPort,
       ),
-      rescheduleEvent:
-          RescheduleEventUseCase(scheduledEventRepository: scheduledEvents),
+      rescheduleEvent: RescheduleEventUseCase(
+        scheduledEventRepository: scheduledEvents,
+      ),
       scheduledEventRepository: scheduledEvents,
     );
 

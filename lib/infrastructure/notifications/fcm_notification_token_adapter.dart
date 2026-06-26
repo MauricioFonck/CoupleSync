@@ -14,9 +14,9 @@ class FcmNotificationTokenAdapter implements NotificationTokenPort {
     required FirebaseMessaging messaging,
     required FirebaseFirestore firestore,
     String? vapidKey,
-  })  : _messaging = messaging,
-        _db = firestore,
-        _vapidKey = vapidKey;
+  }) : _messaging = messaging,
+       _db = firestore,
+       _vapidKey = vapidKey;
 
   final FirebaseMessaging _messaging;
   final FirebaseFirestore _db;
@@ -29,18 +29,12 @@ class FcmNotificationTokenAdapter implements NotificationTokenPort {
   Future<String?> currentToken() => _messaging.getToken(vapidKey: _vapidKey);
 
   @override
-  Future<void> register(UserId userId, String token) => _userDoc(userId).set(
-        {
-          'fcmTokens': FieldValue.arrayUnion([token]),
-        },
-        SetOptions(merge: true),
-      );
+  Future<void> register(UserId userId, String token) => _userDoc(userId).set({
+    'fcmTokens': FieldValue.arrayUnion([token]),
+  }, SetOptions(merge: true));
 
   @override
-  Future<void> unregister(UserId userId, String token) => _userDoc(userId).set(
-        {
-          'fcmTokens': FieldValue.arrayRemove([token]),
-        },
-        SetOptions(merge: true),
-      );
+  Future<void> unregister(UserId userId, String token) => _userDoc(userId).set({
+    'fcmTokens': FieldValue.arrayRemove([token]),
+  }, SetOptions(merge: true));
 }

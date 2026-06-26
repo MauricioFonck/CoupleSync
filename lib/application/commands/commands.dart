@@ -104,10 +104,7 @@ final class GenerateScheduleCommand {
 
 /// Comando para reprogramar un evento.
 final class RescheduleEventCommand {
-  const RescheduleEventCommand({
-    required this.eventId,
-    required this.newDate,
-  });
+  const RescheduleEventCommand({required this.eventId, required this.newDate});
 
   final ScheduledEventId eventId;
   final DateTime newDate;

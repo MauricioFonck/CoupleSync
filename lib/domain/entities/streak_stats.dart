@@ -35,12 +35,12 @@ final class StreakStats {
 
   /// Estadísticas en cero (estado inicial).
   factory StreakStats.zero() => StreakStats(
-        currentStreak: 0,
-        bestStreak: 0,
-        weeklyCompletionRate: 0,
-        monthlyCompletionRate: 0,
-        yearlyCompletionRate: 0,
-      );
+    currentStreak: 0,
+    bestStreak: 0,
+    weeklyCompletionRate: 0,
+    monthlyCompletionRate: 0,
+    yearlyCompletionRate: 0,
+  );
 
   final int currentStreak;
   final int bestStreak;
@@ -60,14 +60,13 @@ final class StreakStats {
 
   @override
   int get hashCode => Object.hash(
-        currentStreak,
-        bestStreak,
-        weeklyCompletionRate,
-        monthlyCompletionRate,
-        yearlyCompletionRate,
-      );
+    currentStreak,
+    bestStreak,
+    weeklyCompletionRate,
+    monthlyCompletionRate,
+    yearlyCompletionRate,
+  );
 
   @override
-  String toString() =>
-      'StreakStats(current=$currentStreak, best=$bestStreak)';
+  String toString() => 'StreakStats(current=$currentStreak, best=$bestStreak)';
 }

@@ -102,7 +102,8 @@ class InMemoryScheduledEventRepository implements ScheduledEventRepositoryPort {
   Future<List<ScheduledEvent>> getByDateRange(DateRange range) async =>
       store.values.where((e) => range.contains(e.date)).toList();
   @override
-  Future<void> save(ScheduledEvent event) async => store[event.id.value] = event;
+  Future<void> save(ScheduledEvent event) async =>
+      store[event.id.value] = event;
 }
 
 class InMemoryConfirmationRepository implements ConfirmationRepositoryPort {
@@ -126,8 +127,7 @@ class InMemoryConfirmationRepository implements ConfirmationRepositoryPort {
   }
 }
 
-class InMemoryWeeklyScheduleRepository
-    implements WeeklyScheduleRepositoryPort {
+class InMemoryWeeklyScheduleRepository implements WeeklyScheduleRepositoryPort {
   final Map<String, WeeklySchedule> store = {};
   final List<ScheduledEvent> savedEvents = [];
   @override
@@ -168,7 +168,7 @@ class InMemoryStatisticsRepository implements StatisticsRepositoryPort {
 
 class InMemorySettingsRepository implements SettingsRepositoryPort {
   InMemorySettingsRepository([SchedulingConfig? config])
-      : _config = config ?? SchedulingConfig.defaults();
+    : _config = config ?? SchedulingConfig.defaults();
   SchedulingConfig _config;
   @override
   Future<SchedulingConfig> getSchedulingConfig() async => _config;

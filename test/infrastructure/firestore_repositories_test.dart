@@ -26,15 +26,15 @@ void main() {
   setUp(() => db = FakeFirebaseFirestore());
 
   Activity activity(String id, {bool active = true}) => Activity(
-        id: ActivityId(id),
-        title: id,
-        description: '',
-        category: ActivityCategory('Cat'),
-        createdBy: userA,
-        active: active,
-        createdAt: DateTime.utc(2026),
-        updatedAt: DateTime.utc(2026),
-      );
+    id: ActivityId(id),
+    title: id,
+    description: '',
+    category: ActivityCategory('Cat'),
+    createdBy: userA,
+    active: active,
+    createdAt: DateTime.utc(2026),
+    updatedAt: DateTime.utc(2026),
+  );
 
   group('FirestoreActivityRepository', () {
     test('save/getById/getAll/getActive/delete', () async {
@@ -71,38 +71,40 @@ void main() {
 
   group('FirestoreWeeklyScheduleRepository (guard transaccional)', () {
     WeeklySchedule schedule() => WeeklySchedule(
-          weekId: WeekId('2026-W26'),
-          eventIds: [ScheduledEventId('evt1')],
-          generatedAt: DateTime.utc(2026, 6, 21),
-        );
+      weekId: WeekId('2026-W26'),
+      eventIds: [ScheduledEventId('evt1')],
+      generatedAt: DateTime.utc(2026, 6, 21),
+    );
 
     ScheduledEvent event() => ScheduledEvent(
-          id: ScheduledEventId('evt1'),
-          date: DateTime.utc(2026, 6, 25),
-          weekId: WeekId('2026-W26'),
-          activityIds: [ActivityId('a1')],
-          status: CompletionStatus.pending,
-          confirmations: const [],
-          createdAt: DateTime.utc(2026, 6, 21),
+      id: ScheduledEventId('evt1'),
+      date: DateTime.utc(2026, 6, 25),
+      weekId: WeekId('2026-W26'),
+      activityIds: [ActivityId('a1')],
+      status: CompletionStatus.pending,
+      confirmations: const [],
+      createdAt: DateTime.utc(2026, 6, 21),
+    );
+
+    test(
+      'saveGenerated crea guard + eventos; segunda vez lanza conflicto',
+      () async {
+        final repo = FirestoreWeeklyScheduleRepository(db);
+        await repo.saveGenerated(schedule: schedule(), events: [event()]);
+
+        expect(await repo.exists(WeekId('2026-W26')), isTrue);
+        expect((await repo.getByWeek(WeekId('2026-W26')))!.eventIds.length, 1);
+        expect(
+          (await db.collection('scheduledEvents').doc('evt1').get()).exists,
+          isTrue,
         );
 
-    test('saveGenerated crea guard + eventos; segunda vez lanza conflicto',
-        () async {
-      final repo = FirestoreWeeklyScheduleRepository(db);
-      await repo.saveGenerated(schedule: schedule(), events: [event()]);
-
-      expect(await repo.exists(WeekId('2026-W26')), isTrue);
-      expect((await repo.getByWeek(WeekId('2026-W26')))!.eventIds.length, 1);
-      expect(
-        (await db.collection('scheduledEvents').doc('evt1').get()).exists,
-        isTrue,
-      );
-
-      expect(
-        () => repo.saveGenerated(schedule: schedule(), events: [event()]),
-        throwsA(isA<ScheduleGenerationConflictException>()),
-      );
-    });
+        expect(
+          () => repo.saveGenerated(schedule: schedule(), events: [event()]),
+          throwsA(isA<ScheduleGenerationConflictException>()),
+        );
+      },
+    );
   });
 
   group('Confirmaciones end-to-end (hidratación + regla ambos aprueban)', () {

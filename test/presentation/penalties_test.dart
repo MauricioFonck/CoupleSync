@@ -6,12 +6,13 @@ import '_pump.dart';
 
 void main() {
   MockFirebaseAuth signedIn() => MockFirebaseAuth(
-        signedIn: true,
-        mockUser: MockUser(uid: 'A', displayName: 'Ana'),
-      );
+    signedIn: true,
+    mockUser: MockUser(uid: 'A', displayName: 'Ana'),
+  );
 
-  testWidgets('crear penitencia con severidad la muestra en la lista',
-      (tester) async {
+  testWidgets('crear penitencia con severidad la muestra en la lista', (
+    tester,
+  ) async {
     await pumpApp(tester, auth: signedIn());
 
     await tester.tap(find.text('Penitencias').first);

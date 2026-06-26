@@ -13,10 +13,11 @@ class FirestoreConfirmationRepository implements ConfirmationRepositoryPort {
   final FirebaseFirestore _db;
 
   /// Subcolección `scheduledEvents/{eventId}/confirmations`.
-  CollectionReference<Map<String, dynamic>> _col(ScheduledEventId eventId) => _db
-      .collection(FirestoreCollections.scheduledEvents)
-      .doc(eventId.value)
-      .collection(FirestoreCollections.confirmations);
+  CollectionReference<Map<String, dynamic>> _col(ScheduledEventId eventId) =>
+      _db
+          .collection(FirestoreCollections.scheduledEvents)
+          .doc(eventId.value)
+          .collection(FirestoreCollections.confirmations);
 
   /// Id determinista por (usuario, actividad) para que el upsert reemplace.
   static String docId(Confirmation c) =>
@@ -31,9 +32,6 @@ class FirestoreConfirmationRepository implements ConfirmationRepositoryPort {
   }
 
   @override
-  Future<void> upsert(
-    ScheduledEventId eventId,
-    Confirmation confirmation,
-  ) =>
+  Future<void> upsert(ScheduledEventId eventId, Confirmation confirmation) =>
       _col(eventId).doc(docId(confirmation)).set(confirmation.toDto().toJson());
 }

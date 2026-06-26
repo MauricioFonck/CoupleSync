@@ -36,16 +36,16 @@ class ActivitiesScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (activities) {
           if (activities.isEmpty) {
-            return const Center(child: Text('Sin actividades. Crea la primera.'));
+            return const Center(
+              child: Text('Sin actividades. Crea la primera.'),
+            );
           }
           return ListView.builder(
             itemCount: activities.length,
             itemBuilder: (context, index) {
               final a = activities[index];
               return ListTile(
-                leading: Icon(
-                  a.imageId != null ? Icons.image : Icons.event,
-                ),
+                leading: Icon(a.imageId != null ? Icons.image : Icons.event),
                 title: Text(a.title),
                 subtitle: Text(a.category.value),
                 onTap: () => _openForm(context, activity: a),
@@ -167,8 +167,9 @@ class _ActivityFormDialogState extends ConsumerState<ActivityFormDialog> {
     if (failure == null) {
       Navigator.of(context).pop();
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(failure.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.message)));
     }
   }
 

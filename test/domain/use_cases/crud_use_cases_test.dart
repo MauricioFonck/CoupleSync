@@ -78,8 +78,10 @@ void main() {
         severity: Severity.low,
         active: true,
       );
-      final uc =
-          GeneratePenaltyUseCase(penaltyRepository: repo, random: FakeRandom());
+      final uc = GeneratePenaltyUseCase(
+        penaltyRepository: repo,
+        random: FakeRandom(),
+      );
       final p = await uc.execute();
       expect(p.id, PenaltyId('p1'));
     });

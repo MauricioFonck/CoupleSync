@@ -8,11 +8,11 @@ import '../providers/schedule_controller.dart';
 import 'confirmations_screen.dart';
 
 String statusLabel(CompletionStatus s) => switch (s) {
-      CompletionStatus.pending => 'Pendiente',
-      CompletionStatus.completed => 'Completado',
-      CompletionStatus.missed => 'Fallido',
-      CompletionStatus.rescheduled => 'Reprogramado',
-    };
+  CompletionStatus.pending => 'Pendiente',
+  CompletionStatus.completed => 'Completado',
+  CompletionStatus.missed => 'Fallido',
+  CompletionStatus.rescheduled => 'Reprogramado',
+};
 
 /// Vista de la agenda semanal con navegación de semanas y reprogramación.
 class ScheduleScreen extends ConsumerWidget {
@@ -21,9 +21,7 @@ class ScheduleScreen extends ConsumerWidget {
   void _shiftWeek(WidgetRef ref, int deltaDays) {
     final current = ref.read(scheduleWeekProvider);
     final newMonday = current.mondayUtc.add(Duration(days: deltaDays));
-    ref
-        .read(scheduleWeekProvider.notifier)
-        .setWeek(WeekId.fromDate(newMonday));
+    ref.read(scheduleWeekProvider.notifier).setWeek(WeekId.fromDate(newMonday));
   }
 
   Future<void> _reschedule(
@@ -38,7 +36,9 @@ class ScheduleScreen extends ConsumerWidget {
       initialDate: event.date,
     );
     if (picked == null) return;
-    await ref.read(scheduleControllerProvider.notifier).reschedule(
+    await ref
+        .read(scheduleControllerProvider.notifier)
+        .reschedule(
           event.id,
           DateTime.utc(picked.year, picked.month, picked.day),
         );
@@ -77,9 +77,7 @@ class ScheduleScreen extends ConsumerWidget {
             error: (e, _) => Center(child: Text('Error: $e')),
             data: (events) {
               if (events.isEmpty) {
-                return const Center(
-                  child: Text('No hay eventos esta semana.'),
-                );
+                return const Center(child: Text('No hay eventos esta semana.'));
               }
               return ListView.builder(
                 itemCount: events.length,

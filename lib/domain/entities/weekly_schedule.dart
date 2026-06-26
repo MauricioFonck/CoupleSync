@@ -28,10 +28,8 @@ final class WeeklySchedule {
           other.generatedAt == generatedAt);
 
   @override
-  int get hashCode =>
-      Object.hash(weekId, _listEq.hash(eventIds), generatedAt);
+  int get hashCode => Object.hash(weekId, _listEq.hash(eventIds), generatedAt);
 
   @override
-  String toString() =>
-      'WeeklySchedule($weekId, events=${eventIds.length})';
+  String toString() => 'WeeklySchedule($weekId, events=${eventIds.length})';
 }

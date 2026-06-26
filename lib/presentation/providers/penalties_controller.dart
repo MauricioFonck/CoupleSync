@@ -10,8 +10,8 @@ import 'app_providers.dart';
 
 final penaltiesControllerProvider =
     AsyncNotifierProvider<PenaltiesController, List<Penalty>>(
-  PenaltiesController.new,
-);
+      PenaltiesController.new,
+    );
 
 class PenaltiesController extends AsyncNotifier<List<Penalty>> {
   PenaltyService get _service => ref.read(penaltyServiceProvider);

@@ -5,7 +5,8 @@ abstract final class FirestoreCollections {
   static const penalties = 'penalties';
   static const weeklySchedules = 'weeklySchedules';
   static const scheduledEvents = 'scheduledEvents';
-  static const confirmations = 'confirmations'; // subcolección de scheduledEvents
+  static const confirmations =
+      'confirmations'; // subcolección de scheduledEvents
   static const availability = 'availability';
   static const statistics = 'statistics';
   static const settings = 'settings';

@@ -31,13 +31,10 @@ final class ScheduledEvent {
   final DateTime createdAt;
 
   /// `true` si [userId] aprobó la actividad [activityId] en este evento.
-  bool isApprovedBy(ActivityId activityId, UserId userId) =>
-      confirmations.any(
-        (c) =>
-            c.activityId == activityId &&
-            c.userId == userId &&
-            c.status.isApproved,
-      );
+  bool isApprovedBy(ActivityId activityId, UserId userId) => confirmations.any(
+    (c) =>
+        c.activityId == activityId && c.userId == userId && c.status.isApproved,
+  );
 
   /// `true` si **ambos** usuarios aprobaron **todas** las actividades.
   /// Requisito para completar el evento (regla de negocio).
@@ -51,8 +48,9 @@ final class ScheduledEvent {
   ScheduledEvent upsertConfirmation(Confirmation confirmation) {
     final next = <Confirmation>[
       ...confirmations.where(
-        (c) => !(c.activityId == confirmation.activityId &&
-            c.userId == confirmation.userId),
+        (c) =>
+            !(c.activityId == confirmation.activityId &&
+                c.userId == confirmation.userId),
       ),
       confirmation,
     ];
@@ -65,17 +63,16 @@ final class ScheduledEvent {
     List<Confirmation>? confirmations,
     String? notes,
     bool clearNotes = false,
-  }) =>
-      ScheduledEvent(
-        id: id,
-        date: date,
-        weekId: weekId,
-        activityIds: activityIds ?? this.activityIds,
-        status: status ?? this.status,
-        confirmations: confirmations ?? this.confirmations,
-        notes: clearNotes ? null : (notes ?? this.notes),
-        createdAt: createdAt,
-      );
+  }) => ScheduledEvent(
+    id: id,
+    date: date,
+    weekId: weekId,
+    activityIds: activityIds ?? this.activityIds,
+    status: status ?? this.status,
+    confirmations: confirmations ?? this.confirmations,
+    notes: clearNotes ? null : (notes ?? this.notes),
+    createdAt: createdAt,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -92,15 +89,15 @@ final class ScheduledEvent {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        date,
-        weekId,
-        _listEq.hash(activityIds),
-        status,
-        _listEq.hash(confirmations),
-        notes,
-        createdAt,
-      );
+    id,
+    date,
+    weekId,
+    _listEq.hash(activityIds),
+    status,
+    _listEq.hash(confirmations),
+    notes,
+    createdAt,
+  );
 
   @override
   String toString() =>

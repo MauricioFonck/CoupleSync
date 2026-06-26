@@ -31,12 +31,12 @@ final class Availability {
 
   /// Disponibilidad vacía (nada disponible) para un usuario.
   factory Availability.empty(UserId userId) => Availability(
-        userId: userId,
-        availableWeekdays: const <int>{},
-        slotsByWeekday: const <int, List<TimeSlot>>{},
-        blockedDates: const <DateTime>{},
-        unavailablePeriods: const <DateRange>[],
-      );
+    userId: userId,
+    availableWeekdays: const <int>{},
+    slotsByWeekday: const <int, List<TimeSlot>>{},
+    blockedDates: const <DateTime>{},
+    unavailablePeriods: const <DateRange>[],
+  );
 
   final UserId userId;
 
@@ -81,12 +81,12 @@ final class Availability {
 
   @override
   int get hashCode => Object.hash(
-        userId,
-        _deepEq.hash(availableWeekdays),
-        _deepEq.hash(slotsByWeekday),
-        _deepEq.hash(blockedDates),
-        _deepEq.hash(unavailablePeriods),
-      );
+    userId,
+    _deepEq.hash(availableWeekdays),
+    _deepEq.hash(slotsByWeekday),
+    _deepEq.hash(blockedDates),
+    _deepEq.hash(unavailablePeriods),
+  );
 
   @override
   String toString() => 'Availability($userId, weekdays=$availableWeekdays)';

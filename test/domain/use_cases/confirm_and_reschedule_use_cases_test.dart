@@ -19,14 +19,14 @@ void main() {
   late InMemoryConfirmationRepository confirmations;
 
   ScheduledEvent pendingEvent() => ScheduledEvent(
-        id: eventId,
-        date: DateTime.utc(2026, 6, 25),
-        weekId: WeekId('2026-W26'),
-        activityIds: [act1],
-        status: CompletionStatus.pending,
-        confirmations: const [],
-        createdAt: DateTime.utc(2026, 6, 20),
-      );
+    id: eventId,
+    date: DateTime.utc(2026, 6, 25),
+    weekId: WeekId('2026-W26'),
+    activityIds: [act1],
+    status: CompletionStatus.pending,
+    confirmations: const [],
+    createdAt: DateTime.utc(2026, 6, 20),
+  );
 
   setUp(() {
     events = InMemoryScheduledEventRepository();
@@ -35,35 +35,37 @@ void main() {
   });
 
   ConfirmActivityUseCase confirmUseCase() => ConfirmActivityUseCase(
-        scheduledEventRepository: events,
-        confirmationRepository: confirmations,
-      );
+    scheduledEventRepository: events,
+    confirmationRepository: confirmations,
+  );
 
   group('ConfirmActivityUseCase', () {
-    test('no completa con una sola aprobación; completa cuando aprueban ambos',
-        () async {
-      final uc = confirmUseCase();
-      final afterA = await uc.execute(
-        eventId: eventId,
-        userId: userA,
-        activityId: act1,
-        status: ConfirmationStatus.approved,
-        partnerA: userA,
-        partnerB: userB,
-      );
-      expect(afterA.status, CompletionStatus.pending);
+    test(
+      'no completa con una sola aprobación; completa cuando aprueban ambos',
+      () async {
+        final uc = confirmUseCase();
+        final afterA = await uc.execute(
+          eventId: eventId,
+          userId: userA,
+          activityId: act1,
+          status: ConfirmationStatus.approved,
+          partnerA: userA,
+          partnerB: userB,
+        );
+        expect(afterA.status, CompletionStatus.pending);
 
-      final afterB = await uc.execute(
-        eventId: eventId,
-        userId: userB,
-        activityId: act1,
-        status: ConfirmationStatus.approved,
-        partnerA: userA,
-        partnerB: userB,
-      );
-      expect(afterB.status, CompletionStatus.completed);
-      expect(confirmations.store[eventId.value]!.length, 2);
-    });
+        final afterB = await uc.execute(
+          eventId: eventId,
+          userId: userB,
+          activityId: act1,
+          status: ConfirmationStatus.approved,
+          partnerA: userA,
+          partnerB: userB,
+        );
+        expect(afterB.status, CompletionStatus.completed);
+        expect(confirmations.store[eventId.value]!.length, 2);
+      },
+    );
 
     test('lanza si la actividad no pertenece al evento', () async {
       expect(
@@ -95,24 +97,28 @@ void main() {
   });
 
   group('RescheduleEventUseCase', () {
-    test('mueve la fecha, recalcula semana y reinicia confirmaciones',
-        () async {
-      final moved = await RescheduleEventUseCase(
-        scheduledEventRepository: events,
-      ).execute(eventId: eventId, newDate: DateTime.utc(2026, 7, 23));
+    test(
+      'mueve la fecha, recalcula semana y reinicia confirmaciones',
+      () async {
+        final moved = await RescheduleEventUseCase(
+          scheduledEventRepository: events,
+        ).execute(eventId: eventId, newDate: DateTime.utc(2026, 7, 23));
 
-      expect(moved.date, DateTime.utc(2026, 7, 23));
-      expect(moved.weekId, WeekId.fromDate(DateTime.utc(2026, 7, 23)));
-      expect(moved.status, CompletionStatus.pending);
-      expect(moved.confirmations, isEmpty);
-    });
+        expect(moved.date, DateTime.utc(2026, 7, 23));
+        expect(moved.weekId, WeekId.fromDate(DateTime.utc(2026, 7, 23)));
+        expect(moved.status, CompletionStatus.pending);
+        expect(moved.confirmations, isEmpty);
+      },
+    );
 
     test('no reprograma un evento cerrado', () async {
-      events.store[eventId.value] =
-          pendingEvent().copyWith(status: CompletionStatus.completed);
+      events.store[eventId.value] = pendingEvent().copyWith(
+        status: CompletionStatus.completed,
+      );
       expect(
-        () => RescheduleEventUseCase(scheduledEventRepository: events)
-            .execute(eventId: eventId, newDate: DateTime.utc(2026, 7, 23)),
+        () => RescheduleEventUseCase(
+          scheduledEventRepository: events,
+        ).execute(eventId: eventId, newDate: DateTime.utc(2026, 7, 23)),
         throwsA(isA<DomainInvariantException>()),
       );
     });

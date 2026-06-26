@@ -29,11 +29,13 @@ final dashboardProvider = FutureProvider<DashboardData>((ref) async {
   final statsResult = await ref.watch(statisticsServiceProvider).refresh();
   final stats = statsResult.fold((value) => value, (failure) => throw failure);
 
-  final eventsResult = await ref.watch(schedulingServiceProvider).history(
-        DateRange(start: DateTime.utc(2000), end: DateTime.utc(2100)),
-      );
-  final events =
-      eventsResult.fold((value) => value, (failure) => throw failure);
+  final eventsResult = await ref
+      .watch(schedulingServiceProvider)
+      .history(DateRange(start: DateTime.utc(2000), end: DateTime.utc(2100)));
+  final events = eventsResult.fold(
+    (value) => value,
+    (failure) => throw failure,
+  );
 
   int countBy(CompletionStatus status) =>
       events.where((e) => e.status == status).length;

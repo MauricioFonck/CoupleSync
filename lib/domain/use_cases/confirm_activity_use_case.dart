@@ -13,8 +13,8 @@ class ConfirmActivityUseCase {
   const ConfirmActivityUseCase({
     required ScheduledEventRepositoryPort scheduledEventRepository,
     required ConfirmationRepositoryPort confirmationRepository,
-  })  : _events = scheduledEventRepository,
-        _confirmations = confirmationRepository;
+  }) : _events = scheduledEventRepository,
+       _confirmations = confirmationRepository;
 
   final ScheduledEventRepositoryPort _events;
   final ConfirmationRepositoryPort _confirmations;

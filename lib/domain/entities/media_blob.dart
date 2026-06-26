@@ -59,15 +59,15 @@ final class MediaBlob {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        base64,
-        mime,
-        width,
-        height,
-        byteSize,
-        createdBy,
-        createdAt,
-      );
+    id,
+    base64,
+    mime,
+    width,
+    height,
+    byteSize,
+    createdBy,
+    createdAt,
+  );
 
   @override
   String toString() =>

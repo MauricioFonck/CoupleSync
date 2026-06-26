@@ -6,9 +6,9 @@ import '_pump.dart';
 
 void main() {
   MockFirebaseAuth signedIn() => MockFirebaseAuth(
-        signedIn: true,
-        mockUser: MockUser(uid: 'A', displayName: 'Ana'),
-      );
+    signedIn: true,
+    mockUser: MockUser(uid: 'A', displayName: 'Ana'),
+  );
 
   testWidgets('selecciona días y guarda la disponibilidad', (tester) async {
     await pumpApp(tester, auth: signedIn());

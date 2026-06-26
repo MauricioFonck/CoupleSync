@@ -7,10 +7,8 @@ final class User {
   final UserId id;
   final String displayName;
 
-  User copyWith({UserId? id, String? displayName}) => User(
-        id: id ?? this.id,
-        displayName: displayName ?? this.displayName,
-      );
+  User copyWith({UserId? id, String? displayName}) =>
+      User(id: id ?? this.id, displayName: displayName ?? this.displayName);
 
   @override
   bool operator ==(Object other) =>

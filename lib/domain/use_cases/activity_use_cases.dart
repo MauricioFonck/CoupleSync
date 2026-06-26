@@ -12,9 +12,9 @@ class CreateActivityUseCase {
     required ActivityRepositoryPort activityRepository,
     required IdGeneratorPort idGenerator,
     required ClockPort clock,
-  })  : _repository = activityRepository,
-        _idGenerator = idGenerator,
-        _clock = clock;
+  }) : _repository = activityRepository,
+       _idGenerator = idGenerator,
+       _clock = clock;
 
   final ActivityRepositoryPort _repository;
   final IdGeneratorPort _idGenerator;
@@ -52,8 +52,8 @@ class UpdateActivityUseCase {
   const UpdateActivityUseCase({
     required ActivityRepositoryPort activityRepository,
     required ClockPort clock,
-  })  : _repository = activityRepository,
-        _clock = clock;
+  }) : _repository = activityRepository,
+       _clock = clock;
 
   final ActivityRepositoryPort _repository;
   final ClockPort _clock;
@@ -92,8 +92,8 @@ class SetActivityActiveUseCase {
   const SetActivityActiveUseCase({
     required ActivityRepositoryPort activityRepository,
     required ClockPort clock,
-  })  : _repository = activityRepository,
-        _clock = clock;
+  }) : _repository = activityRepository,
+       _clock = clock;
 
   final ActivityRepositoryPort _repository;
   final ClockPort _clock;

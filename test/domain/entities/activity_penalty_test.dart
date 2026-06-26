@@ -7,16 +7,16 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Activity buildActivity() => Activity(
-        id: ActivityId('a1'),
-        title: 'Cena',
-        description: 'Cena romántica',
-        category: ActivityCategory('Comida'),
-        createdBy: UserId('A'),
-        active: true,
-        imageId: MediaId('m1'),
-        createdAt: DateTime.utc(2026, 6, 1),
-        updatedAt: DateTime.utc(2026, 6, 1),
-      );
+    id: ActivityId('a1'),
+    title: 'Cena',
+    description: 'Cena romántica',
+    category: ActivityCategory('Comida'),
+    createdBy: UserId('A'),
+    active: true,
+    imageId: MediaId('m1'),
+    createdAt: DateTime.utc(2026, 6, 1),
+    updatedAt: DateTime.utc(2026, 6, 1),
+  );
 
   group('Activity', () {
     test('copyWith preserva id/createdBy/createdAt y cambia campos', () {

@@ -13,8 +13,8 @@ class CalculateStreaksUseCase {
   const CalculateStreaksUseCase({
     required ScheduledEventRepositoryPort scheduledEventRepository,
     required ClockPort clock,
-  })  : _events = scheduledEventRepository,
-        _clock = clock;
+  }) : _events = scheduledEventRepository,
+       _clock = clock;
 
   final ScheduledEventRepositoryPort _events;
   final ClockPort _clock;
@@ -71,12 +71,14 @@ class CalculateStreaksUseCase {
 
   double _rate(List<ScheduledEvent> closedAsc, DateTime now, Duration window) {
     final from = now.subtract(window);
-    final inWindow =
-        closedAsc.where((e) => !e.date.isBefore(from) && !e.date.isAfter(now));
+    final inWindow = closedAsc.where(
+      (e) => !e.date.isBefore(from) && !e.date.isAfter(now),
+    );
     final total = inWindow.length;
     if (total == 0) return 0;
-    final completed =
-        inWindow.where((e) => e.status == CompletionStatus.completed).length;
+    final completed = inWindow
+        .where((e) => e.status == CompletionStatus.completed)
+        .length;
     return completed / total;
   }
 }

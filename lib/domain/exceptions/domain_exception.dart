@@ -43,7 +43,10 @@ class EntityNotFoundException extends DomainException {
 /// el *guard* `weeklySchedules/{weekId}` ya estaba creado (ver D2). Evita la
 /// doble generación cuando A y B abren la app a la vez.
 class ScheduleGenerationConflictException extends DomainException {
-  const ScheduleGenerationConflictException(super.message, {required this.weekId});
+  const ScheduleGenerationConflictException(
+    super.message, {
+    required this.weekId,
+  });
 
   /// Semana (formato `YYYY-Www`) cuyo guard ya existía.
   final String weekId;

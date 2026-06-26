@@ -25,9 +25,7 @@ void main() {
       final av = Availability(
         userId: UserId('A'),
         availableWeekdays: const {4},
-        slotsByWeekday: const {
-          4: [],
-        },
+        slotsByWeekday: const {4: []},
         blockedDates: const {},
         unavailablePeriods: const [],
       );
@@ -48,7 +46,10 @@ void main() {
           ),
         ],
       );
-      expect(av.isDayAvailable(DateTime.utc(2026, 6, 25)), isFalse); // bloqueada
+      expect(
+        av.isDayAvailable(DateTime.utc(2026, 6, 25)),
+        isFalse,
+      ); // bloqueada
       expect(av.isDayAvailable(DateTime.utc(2026, 7, 5)), isFalse); // periodo
       expect(av.isDayAvailable(DateTime.utc(2026, 6, 24)), isTrue);
     });

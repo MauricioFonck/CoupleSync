@@ -19,13 +19,18 @@ void main() {
 
     test('toString incluye contexto útil', () {
       expect(
-        const EntityNotFoundException('no existe', entity: 'Activity', id: 'a1')
-            .toString(),
+        const EntityNotFoundException(
+          'no existe',
+          entity: 'Activity',
+          id: 'a1',
+        ).toString(),
         contains('Activity'),
       );
       expect(
-        const ScheduleGenerationConflictException('dup', weekId: '2026-W26')
-            .toString(),
+        const ScheduleGenerationConflictException(
+          'dup',
+          weekId: '2026-W26',
+        ).toString(),
         contains('2026-W26'),
       );
     });

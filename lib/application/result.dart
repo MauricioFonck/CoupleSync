@@ -9,14 +9,14 @@ sealed class Result<T> {
   bool get isErr => this is Err<T>;
 
   T? get valueOrNull => switch (this) {
-        Ok<T>(:final value) => value,
-        Err<T>() => null,
-      };
+    Ok<T>(:final value) => value,
+    Err<T>() => null,
+  };
 
   AppFailure? get failureOrNull => switch (this) {
-        Ok<T>() => null,
-        Err<T>(:final failure) => failure,
-      };
+    Ok<T>() => null,
+    Err<T>(:final failure) => failure,
+  };
 
   /// Colapsa el resultado en un único valor según el caso.
   R fold<R>(R Function(T value) onOk, R Function(AppFailure failure) onErr) =>

@@ -16,12 +16,12 @@ class PenaltyService {
     required DeletePenaltyUseCase deletePenalty,
     required GeneratePenaltyUseCase generatePenalty,
     required PenaltyRepositoryPort penaltyRepository,
-  })  : _create = createPenalty,
-        _update = updatePenalty,
-        _setActive = setPenaltyActive,
-        _delete = deletePenalty,
-        _generate = generatePenalty,
-        _repository = penaltyRepository;
+  }) : _create = createPenalty,
+       _update = updatePenalty,
+       _setActive = setPenaltyActive,
+       _delete = deletePenalty,
+       _generate = generatePenalty,
+       _repository = penaltyRepository;
 
   final CreatePenaltyUseCase _create;
   final UpdatePenaltyUseCase _update;
@@ -31,24 +31,24 @@ class PenaltyService {
   final PenaltyRepositoryPort _repository;
 
   Future<Result<Penalty>> create(CreatePenaltyCommand command) => runCatching(
-        () => _create.execute(
-          title: command.title,
-          description: command.description,
-          severity: command.severity,
-          imageId: command.imageId,
-        ),
-      );
+    () => _create.execute(
+      title: command.title,
+      description: command.description,
+      severity: command.severity,
+      imageId: command.imageId,
+    ),
+  );
 
   Future<Result<Penalty>> update(UpdatePenaltyCommand command) => runCatching(
-        () => _update.execute(
-          id: command.id,
-          title: command.title,
-          description: command.description,
-          severity: command.severity,
-          imageId: command.imageId,
-          clearImage: command.clearImage,
-        ),
-      );
+    () => _update.execute(
+      id: command.id,
+      title: command.title,
+      description: command.description,
+      severity: command.severity,
+      imageId: command.imageId,
+      clearImage: command.clearImage,
+    ),
+  );
 
   Future<Result<Penalty>> setActive(PenaltyId id, {required bool active}) =>
       runCatching(() => _setActive.execute(id: id, active: active));
@@ -61,8 +61,7 @@ class PenaltyService {
 
   Future<Result<List<Penalty>>> list([
     PenaltiesQuery query = const PenaltiesQuery(),
-  ]) =>
-      runCatching(
-        () => query.onlyActive ? _repository.getActive() : _repository.getAll(),
-      );
+  ]) => runCatching(
+    () => query.onlyActive ? _repository.getActive() : _repository.getAll(),
+  );
 }

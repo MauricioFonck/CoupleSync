@@ -22,23 +22,23 @@ void main() {
   late InMemoryWeeklyScheduleRepository weekly;
 
   Activity activity(String id) => Activity(
-        id: ActivityId(id),
-        title: id,
-        description: '',
-        category: ActivityCategory('Cat'),
-        createdBy: userA,
-        active: true,
-        createdAt: DateTime.utc(2026),
-        updatedAt: DateTime.utc(2026),
-      );
+    id: ActivityId(id),
+    title: id,
+    description: '',
+    category: ActivityCategory('Cat'),
+    createdBy: userA,
+    active: true,
+    createdAt: DateTime.utc(2026),
+    updatedAt: DateTime.utc(2026),
+  );
 
   Availability allDays(UserId u) => Availability(
-        userId: u,
-        availableWeekdays: const {1, 2, 3, 4, 5, 6, 7},
-        slotsByWeekday: const {},
-        blockedDates: const {},
-        unavailablePeriods: const [],
-      );
+    userId: u,
+    availableWeekdays: const {1, 2, 3, 4, 5, 6, 7},
+    slotsByWeekday: const {},
+    blockedDates: const {},
+    unavailablePeriods: const [],
+  );
 
   GenerateWeeklyScheduleUseCase build({int days = 2, int perDay = 1}) =>
       GenerateWeeklyScheduleUseCase(
@@ -65,14 +65,19 @@ void main() {
   });
 
   test('genera N días con la disponibilidad de ambos', () async {
-    final schedule =
-        await build().execute(targetWeek: week, partnerA: userA, partnerB: userB);
+    final schedule = await build().execute(
+      targetWeek: week,
+      partnerA: userA,
+      partnerB: userB,
+    );
 
     expect(schedule.weekId, week);
     expect(schedule.eventIds.length, 2);
     expect(weekly.savedEvents.length, 2);
-    expect(weekly.savedEvents.every((e) => e.status == CompletionStatus.pending),
-        isTrue);
+    expect(
+      weekly.savedEvents.every((e) => e.status == CompletionStatus.pending),
+      isTrue,
+    );
     // perDay = 1 y sin repetición consecutiva.
     expect(weekly.savedEvents[0].activityIds, [ActivityId('a1')]);
     expect(weekly.savedEvents[1].activityIds, [ActivityId('a2')]);
@@ -106,20 +111,26 @@ void main() {
 
     await build().execute(targetWeek: week, partnerA: userA, partnerB: userB);
 
-    final picks =
-        weekly.savedEvents.map((e) => e.activityIds.single.value).toList();
+    final picks = weekly.savedEvents
+        .map((e) => e.activityIds.single.value)
+        .toList();
     expect(picks.length, 3);
     for (var i = 1; i < picks.length; i++) {
       expect(picks[i], isNot(picks[i - 1]));
     }
   });
 
-  test('respeta la indisponibilidad (un usuario sin días => 0 eventos)',
-      () async {
-    availability.store['B'] = Availability.empty(userB);
-    final schedule =
-        await build().execute(targetWeek: week, partnerA: userA, partnerB: userB);
-    expect(schedule.eventIds, isEmpty);
-    expect(weekly.savedEvents, isEmpty);
-  });
+  test(
+    'respeta la indisponibilidad (un usuario sin días => 0 eventos)',
+    () async {
+      availability.store['B'] = Availability.empty(userB);
+      final schedule = await build().execute(
+        targetWeek: week,
+        partnerA: userA,
+        partnerB: userB,
+      );
+      expect(schedule.eventIds, isEmpty);
+      expect(weekly.savedEvents, isEmpty);
+    },
+  );
 }

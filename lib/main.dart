@@ -14,8 +14,9 @@ import 'presentation/theme/app_theme.dart';
 
 /// reCAPTCHA v3 site key para App Check (web). Se inyecta vía
 /// `--dart-define=RECAPTCHA_V3_SITE_KEY=...` (ver docs/SECURITY.md).
-const String _recaptchaV3SiteKey =
-    String.fromEnvironment('RECAPTCHA_V3_SITE_KEY');
+const String _recaptchaV3SiteKey = String.fromEnvironment(
+  'RECAPTCHA_V3_SITE_KEY',
+);
 
 /// VAPID key para tokens FCM web (opcional). `--dart-define=FCM_VAPID_KEY=...`.
 const String _fcmVapidKey = String.fromEnvironment('FCM_VAPID_KEY');
@@ -23,9 +24,7 @@ const String _fcmVapidKey = String.fromEnvironment('FCM_VAPID_KEY');
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (_recaptchaV3SiteKey.isNotEmpty) {
     await FirebaseAppCheck.instance.activate(
@@ -34,8 +33,9 @@ Future<void> main() async {
   }
 
   // Persistencia offline (IndexedDB en web) — D4.
-  FirebaseFirestore.instance.settings =
-      const Settings(persistenceEnabled: true);
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+  );
 
   final compositionRoot = CompositionRoot(
     firestore: FirebaseFirestore.instance,
@@ -46,9 +46,7 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      overrides: [
-        compositionRootProvider.overrideWithValue(compositionRoot),
-      ],
+      overrides: [compositionRootProvider.overrideWithValue(compositionRoot)],
       child: const CoupleSyncApp(),
     ),
   );

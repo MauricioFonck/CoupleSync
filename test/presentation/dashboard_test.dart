@@ -12,14 +12,14 @@ import '_pump.dart';
 
 void main() {
   ScheduledEvent event(String id, CompletionStatus status) => ScheduledEvent(
-        id: ScheduledEventId(id),
-        date: DateTime.utc(2025, 5, 10),
-        weekId: WeekId.fromDate(DateTime.utc(2025, 5, 10)),
-        activityIds: [ActivityId('a1')],
-        status: status,
-        confirmations: const [],
-        createdAt: DateTime.utc(2025, 5, 1),
-      );
+    id: ScheduledEventId(id),
+    date: DateTime.utc(2025, 5, 10),
+    weekId: WeekId.fromDate(DateTime.utc(2025, 5, 10)),
+    activityIds: [ActivityId('a1')],
+    status: status,
+    confirmations: const [],
+    createdAt: DateTime.utc(2025, 5, 1),
+  );
 
   testWidgets('el dashboard muestra KPIs agregados', (tester) async {
     final db = FakeFirebaseFirestore();

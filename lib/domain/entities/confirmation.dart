@@ -16,10 +16,10 @@ final class Confirmation {
   final ConfirmationStatus status;
 
   Confirmation copyWith({ConfirmationStatus? status}) => Confirmation(
-        userId: userId,
-        activityId: activityId,
-        status: status ?? this.status,
-      );
+    userId: userId,
+    activityId: activityId,
+    status: status ?? this.status,
+  );
 
   @override
   bool operator ==(Object other) =>

@@ -9,10 +9,10 @@ import '../providers/activities_controller.dart';
 import '../providers/app_providers.dart';
 
 String confirmationLabel(ConfirmationStatus? s) => switch (s) {
-      ConfirmationStatus.approved => 'Aprobada',
-      ConfirmationStatus.rejected => 'Rechazada',
-      _ => 'Pendiente',
-    };
+  ConfirmationStatus.approved => 'Aprobada',
+  ConfirmationStatus.rejected => 'Rechazada',
+  _ => 'Pendiente',
+};
 
 /// Pantalla de confirmaciones de un evento: el usuario actual aprueba/rechaza
 /// cada actividad. El evento se completa **solo si ambos aprueban** (regla del
@@ -42,9 +42,7 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
         .map((c) => c.userId)
         .where((u) => u != current)
         .toList();
-    return others.isNotEmpty
-        ? others.first
-        : UserId('__pending_partner__');
+    return others.isNotEmpty ? others.first : UserId('__pending_partner__');
   }
 
   ConfirmationStatus? _statusFor(UserId user, ActivityId activityId) {
@@ -62,7 +60,9 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
     if (current == null) return;
     setState(() => _busy = true);
 
-    final result = await ref.read(confirmationServiceProvider).confirm(
+    final result = await ref
+        .read(confirmationServiceProvider)
+        .confirm(
           ConfirmActivityCommand(
             eventId: _event.id,
             userId: current,
@@ -81,8 +81,9 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
     });
     final failure = result.failureOrNull;
     if (failure != null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(failure.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.message)));
     }
   }
 
@@ -125,10 +126,8 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
                     color: Colors.green,
                     onPressed: _busy
                         ? null
-                        : () => _confirm(
-                              activityId,
-                              ConfirmationStatus.approved,
-                            ),
+                        : () =>
+                              _confirm(activityId, ConfirmationStatus.approved),
                   ),
                   IconButton(
                     key: Key('reject_${activityId.value}'),
@@ -136,10 +135,8 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
                     color: Colors.red,
                     onPressed: _busy
                         ? null
-                        : () => _confirm(
-                              activityId,
-                              ConfirmationStatus.rejected,
-                            ),
+                        : () =>
+                              _confirm(activityId, ConfirmationStatus.rejected),
                   ),
                 ],
               ),
@@ -151,8 +148,8 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
 }
 
 String statusOf(CompletionStatus s) => switch (s) {
-      CompletionStatus.pending => 'Pendiente',
-      CompletionStatus.completed => 'Completado',
-      CompletionStatus.missed => 'Fallido',
-      CompletionStatus.rescheduled => 'Reprogramado',
-    };
+  CompletionStatus.pending => 'Pendiente',
+  CompletionStatus.completed => 'Completado',
+  CompletionStatus.missed => 'Fallido',
+  CompletionStatus.rescheduled => 'Reprogramado',
+};

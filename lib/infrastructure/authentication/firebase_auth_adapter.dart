@@ -26,10 +26,7 @@ class FirebaseAuthAdapter implements AuthPort {
   Future<User?> currentUser() async => _map(_auth.currentUser);
 
   @override
-  Future<User> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<User> signIn({required String email, required String password}) async {
     try {
       final credential = await _auth.signInWithEmailAndPassword(
         email: email,

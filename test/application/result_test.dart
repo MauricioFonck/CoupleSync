@@ -14,9 +14,7 @@ void main() {
     });
 
     test('Err expone failure y fold', () {
-      const r = Err<int>(
-        AppFailure(kind: FailureKind.notFound, message: 'x'),
-      );
+      const r = Err<int>(AppFailure(kind: FailureKind.notFound, message: 'x'));
       expect(r.isErr, isTrue);
       expect(r.valueOrNull, isNull);
       expect(r.failureOrNull!.kind, FailureKind.notFound);

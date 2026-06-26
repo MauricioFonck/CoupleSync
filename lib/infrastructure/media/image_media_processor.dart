@@ -19,8 +19,8 @@ class ImageMediaProcessor implements MediaProcessorPort {
     required ClockPort clock,
     this.maxDimension = 1000,
     this.quality = 80,
-  })  : _idGenerator = idGenerator,
-        _clock = clock;
+  }) : _idGenerator = idGenerator,
+       _clock = clock;
 
   final IdGeneratorPort _idGenerator;
   final ClockPort _clock;
@@ -48,8 +48,9 @@ class ImageMediaProcessor implements MediaProcessorPort {
           )
         : img.copyResize(
             decoded,
-            height:
-                decoded.height > maxDimension ? maxDimension : decoded.height,
+            height: decoded.height > maxDimension
+                ? maxDimension
+                : decoded.height,
           );
 
     final jpg = img.encodeJpg(resized, quality: quality);

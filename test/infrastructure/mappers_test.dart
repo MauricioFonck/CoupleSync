@@ -91,47 +91,49 @@ void main() {
     expect(withConf.confirmations.single, conf);
   });
 
-  test('Confirmation / WeeklySchedule / MediaBlob / StreakStats / Config / User',
-      () {
-    final conf = Confirmation(
-      userId: userA,
-      activityId: ActivityId('a1'),
-      status: ConfirmationStatus.rejected,
-    );
-    expect(conf.toDto().toDomain(), conf);
+  test(
+    'Confirmation / WeeklySchedule / MediaBlob / StreakStats / Config / User',
+    () {
+      final conf = Confirmation(
+        userId: userA,
+        activityId: ActivityId('a1'),
+        status: ConfirmationStatus.rejected,
+      );
+      expect(conf.toDto().toDomain(), conf);
 
-    final ws = WeeklySchedule(
-      weekId: WeekId('2026-W26'),
-      eventIds: [ScheduledEventId('e1')],
-      generatedAt: DateTime.utc(2026, 6, 21),
-    );
-    expect(ws.toDto().toDomain(), ws);
+      final ws = WeeklySchedule(
+        weekId: WeekId('2026-W26'),
+        eventIds: [ScheduledEventId('e1')],
+        generatedAt: DateTime.utc(2026, 6, 21),
+      );
+      expect(ws.toDto().toDomain(), ws);
 
-    final blob = MediaBlob(
-      id: MediaId('m1'),
-      base64: 'AAAA',
-      mime: 'image/jpeg',
-      width: 800,
-      height: 600,
-      byteSize: 1000,
-      createdBy: userA,
-      createdAt: DateTime.utc(2026),
-    );
-    expect(blob.toDto().toDomain(), blob);
+      final blob = MediaBlob(
+        id: MediaId('m1'),
+        base64: 'AAAA',
+        mime: 'image/jpeg',
+        width: 800,
+        height: 600,
+        byteSize: 1000,
+        createdBy: userA,
+        createdAt: DateTime.utc(2026),
+      );
+      expect(blob.toDto().toDomain(), blob);
 
-    final stats = StreakStats(
-      currentStreak: 2,
-      bestStreak: 5,
-      weeklyCompletionRate: 0.5,
-      monthlyCompletionRate: 0.25,
-      yearlyCompletionRate: 0.1,
-    );
-    expect(stats.toDto().toDomain(), stats);
+      final stats = StreakStats(
+        currentStreak: 2,
+        bestStreak: 5,
+        weeklyCompletionRate: 0.5,
+        monthlyCompletionRate: 0.25,
+        yearlyCompletionRate: 0.1,
+      );
+      expect(stats.toDto().toDomain(), stats);
 
-    final cfg = SchedulingConfig(daysPerWeek: 3, activitiesPerDay: 2);
-    expect(cfg.toDto().toDomain(), cfg);
+      final cfg = SchedulingConfig(daysPerWeek: 3, activitiesPerDay: 2);
+      expect(cfg.toDto().toDomain(), cfg);
 
-    final user = User(id: userA, displayName: 'Ana');
-    expect(user.toDto().toDomain(), user);
-  });
+      final user = User(id: userA, displayName: 'Ana');
+      expect(user.toDto().toDomain(), user);
+    },
+  );
 }

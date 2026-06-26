@@ -6,9 +6,9 @@ import '_pump.dart';
 
 void main() {
   MockFirebaseAuth signedIn() => MockFirebaseAuth(
-        signedIn: true,
-        mockUser: MockUser(uid: 'A', displayName: 'Ana'),
-      );
+    signedIn: true,
+    mockUser: MockUser(uid: 'A', displayName: 'Ana'),
+  );
 
   testWidgets('navega entre destinos del shell', (tester) async {
     await pumpApp(tester, auth: signedIn());

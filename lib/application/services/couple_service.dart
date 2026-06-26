@@ -7,7 +7,7 @@ import '../result.dart';
 /// resuelve los UIDs de los dos miembros.
 class CoupleService {
   const CoupleService({required UserRepositoryPort userRepository})
-      : _repository = userRepository;
+    : _repository = userRepository;
 
   final UserRepositoryPort _repository;
 
@@ -15,6 +15,6 @@ class CoupleService {
       runCatching(() => _repository.upsert(user));
 
   Future<Result<List<UserId>>> coupleUserIds() => runCatching(
-        () async => (await _repository.getAll()).map((u) => u.id).toList(),
-      );
+    () async => (await _repository.getAll()).map((u) => u.id).toList(),
+  );
 }

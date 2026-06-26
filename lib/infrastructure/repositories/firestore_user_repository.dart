@@ -26,6 +26,7 @@ class FirestoreUserRepository implements UserRepositoryPort {
   }
 
   @override
-  Future<void> upsert(User user) =>
-      _col.doc(user.id.value).set(user.toDto().toJson(), SetOptions(merge: true));
+  Future<void> upsert(User user) => _col
+      .doc(user.id.value)
+      .set(user.toDto().toJson(), SetOptions(merge: true));
 }

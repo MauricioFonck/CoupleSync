@@ -8,8 +8,8 @@ class AvailabilityService {
   const AvailabilityService({
     required GetAvailabilityUseCase getAvailability,
     required SetAvailabilityUseCase setAvailability,
-  })  : _get = getAvailability,
-        _set = setAvailability;
+  }) : _get = getAvailability,
+       _set = setAvailability;
 
   final GetAvailabilityUseCase _get;
   final SetAvailabilityUseCase _set;

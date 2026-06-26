@@ -28,12 +28,12 @@ class GenerateWeeklyScheduleUseCase {
     required WeeklyScheduleRepositoryPort weeklyScheduleRepository,
     required ClockPort clock,
     required RandomPort random,
-  })  : _activities = activityRepository,
-        _availability = availabilityRepository,
-        _settings = settingsRepository,
-        _weekly = weeklyScheduleRepository,
-        _clock = clock,
-        _random = random;
+  }) : _activities = activityRepository,
+       _availability = availabilityRepository,
+       _settings = settingsRepository,
+       _weekly = weeklyScheduleRepository,
+       _clock = clock,
+       _random = random;
 
   final ActivityRepositoryPort _activities;
   final AvailabilityRepositoryPort _availability;
@@ -107,8 +107,7 @@ class GenerateWeeklyScheduleUseCase {
   }
 
   ScheduledEventId _eventId(WeekId week, DateTime date) {
-    final key =
-        '${date.year}${_pad(date.month)}${_pad(date.day)}';
+    final key = '${date.year}${_pad(date.month)}${_pad(date.day)}';
     return ScheduledEventId('evt_${week.value}_$key');
   }
 
@@ -137,7 +136,9 @@ class GenerateWeeklyScheduleUseCase {
         }
         // Sin distintos suficientes (perDay grande): permite repetir hoy
         // pero nunca del día anterior si hay alternativa.
-        candidate ??= _random.shuffled(allIds).firstWhere(
+        candidate ??= _random
+            .shuffled(allIds)
+            .firstWhere(
               (id) => !dayPick.contains(id),
               orElse: () => allIds.first,
             );

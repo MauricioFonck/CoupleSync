@@ -78,8 +78,9 @@ void main() {
     test('Delete elimina', () async {
       final r = InMemoryActivityRepository();
       seedActivity(r);
-      await DeleteActivityUseCase(activityRepository: r)
-          .execute(ActivityId('a1'));
+      await DeleteActivityUseCase(
+        activityRepository: r,
+      ).execute(ActivityId('a1'));
       expect(r.store.containsKey('a1'), isFalse);
     });
   });
@@ -88,8 +89,9 @@ void main() {
     test('Update cambia severidad', () async {
       final r = InMemoryPenaltyRepository();
       seedPenalty(r);
-      final updated = await UpdatePenaltyUseCase(penaltyRepository: r)
-          .execute(id: PenaltyId('p1'), severity: Severity.high);
+      final updated = await UpdatePenaltyUseCase(
+        penaltyRepository: r,
+      ).execute(id: PenaltyId('p1'), severity: Severity.high);
       expect(updated.severity, Severity.high);
     });
 
@@ -105,8 +107,9 @@ void main() {
     test('SetActive desactiva', () async {
       final r = InMemoryPenaltyRepository();
       seedPenalty(r);
-      final updated = await SetPenaltyActiveUseCase(penaltyRepository: r)
-          .execute(id: PenaltyId('p1'), active: false);
+      final updated = await SetPenaltyActiveUseCase(
+        penaltyRepository: r,
+      ).execute(id: PenaltyId('p1'), active: false);
       expect(updated.active, isFalse);
     });
 
@@ -138,8 +141,9 @@ void main() {
         unavailablePeriods: const [],
       );
       await SetAvailabilityUseCase(availabilityRepository: r).execute(av);
-      final got =
-          await GetAvailabilityUseCase(availabilityRepository: r).execute(userA);
+      final got = await GetAvailabilityUseCase(
+        availabilityRepository: r,
+      ).execute(userA);
       expect(got.availableWeekdays, {1, 2, 3});
     });
 

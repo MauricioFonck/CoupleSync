@@ -39,10 +39,14 @@ void main() {
           idGenerator: SeqIdGenerator(),
           clock: clock,
         ),
-        updateActivity:
-            UpdateActivityUseCase(activityRepository: repo, clock: clock),
-        setActivityActive:
-            SetActivityActiveUseCase(activityRepository: repo, clock: clock),
+        updateActivity: UpdateActivityUseCase(
+          activityRepository: repo,
+          clock: clock,
+        ),
+        setActivityActive: SetActivityActiveUseCase(
+          activityRepository: repo,
+          clock: clock,
+        ),
         deleteActivity: DeleteActivityUseCase(activityRepository: repo),
         activityRepository: repo,
       );
@@ -75,8 +79,9 @@ void main() {
     });
 
     test('update inexistente devuelve Err(notFound)', () async {
-      final r = await service
-          .update(UpdateActivityCommand(id: ActivityId('x'), title: 't'));
+      final r = await service.update(
+        UpdateActivityCommand(id: ActivityId('x'), title: 't'),
+      );
       expect(r.failureOrNull!.kind, FailureKind.notFound);
     });
 
@@ -105,12 +110,12 @@ void main() {
     late SchedulingService service;
 
     Availability allDays(UserId u) => Availability(
-          userId: u,
-          availableWeekdays: const {1, 2, 3, 4, 5, 6, 7},
-          slotsByWeekday: const {},
-          blockedDates: const {},
-          unavailablePeriods: const [],
-        );
+      userId: u,
+      availableWeekdays: const {1, 2, 3, 4, 5, 6, 7},
+      slotsByWeekday: const {},
+      blockedDates: const {},
+      unavailablePeriods: const [],
+    );
 
     setUp(() {
       activities = InMemoryActivityRepository();
@@ -141,8 +146,9 @@ void main() {
           clock: clock,
           random: FakeRandom(),
         ),
-        rescheduleEvent:
-            RescheduleEventUseCase(scheduledEventRepository: events),
+        rescheduleEvent: RescheduleEventUseCase(
+          scheduledEventRepository: events,
+        ),
         scheduledEventRepository: events,
       );
     });

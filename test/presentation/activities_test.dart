@@ -6,9 +6,9 @@ import '_pump.dart';
 
 void main() {
   MockFirebaseAuth signedIn() => MockFirebaseAuth(
-        signedIn: true,
-        mockUser: MockUser(uid: 'A', displayName: 'Ana'),
-      );
+    signedIn: true,
+    mockUser: MockUser(uid: 'A', displayName: 'Ana'),
+  );
 
   Future<void> goToActivities(WidgetTester tester) async {
     await tester.tap(find.text('Actividades').first);
@@ -25,10 +25,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(const Key('activity_title')), 'Cine');
-    await tester.enterText(
-      find.byKey(const Key('activity_category')),
-      'Ocio',
-    );
+    await tester.enterText(find.byKey(const Key('activity_category')), 'Ocio');
     await tester.tap(find.byKey(const Key('activity_save')));
     await tester.pumpAndSettle();
 

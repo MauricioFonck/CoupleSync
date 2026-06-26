@@ -13,8 +13,8 @@ import 'app_providers.dart';
 /// (`null` = éxito) para que la UI muestre el error sin conocer el dominio.
 final activitiesControllerProvider =
     AsyncNotifierProvider<ActivitiesController, List<Activity>>(
-  ActivitiesController.new,
-);
+      ActivitiesController.new,
+    );
 
 class ActivitiesController extends AsyncNotifier<List<Activity>> {
   ActivityService get _service => ref.read(activityServiceProvider);
@@ -36,8 +36,7 @@ class ActivitiesController extends AsyncNotifier<List<Activity>> {
   Future<AppFailure?> setActive(ActivityId id, {required bool active}) =>
       _run(() => _service.setActive(id, active: active));
 
-  Future<AppFailure?> delete(ActivityId id) =>
-      _run(() => _service.delete(id));
+  Future<AppFailure?> delete(ActivityId id) => _run(() => _service.delete(id));
 
   Future<AppFailure?> _run<T>(Future<Result<T>> Function() action) async {
     final failure = (await action()).failureOrNull;

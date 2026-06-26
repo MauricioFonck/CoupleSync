@@ -7,9 +7,8 @@ import '../result.dart';
 /// Orquesta el flujo de confirmaciones. El cierre del evento (cuando ambos
 /// aprueban) lo decide el caso de uso de dominio.
 class ConfirmationService {
-  const ConfirmationService({
-    required ConfirmActivityUseCase confirmActivity,
-  }) : _confirm = confirmActivity;
+  const ConfirmationService({required ConfirmActivityUseCase confirmActivity})
+    : _confirm = confirmActivity;
 
   final ConfirmActivityUseCase _confirm;
 
@@ -20,15 +19,14 @@ class ConfirmationService {
     ConfirmActivityCommand command, {
     required UserId partnerA,
     required UserId partnerB,
-  }) =>
-      runCatching(
-        () => _confirm.execute(
-          eventId: command.eventId,
-          userId: command.userId,
-          activityId: command.activityId,
-          status: command.status,
-          partnerA: partnerA,
-          partnerB: partnerB,
-        ),
-      );
+  }) => runCatching(
+    () => _confirm.execute(
+      eventId: command.eventId,
+      userId: command.userId,
+      activityId: command.activityId,
+      status: command.status,
+      partnerA: partnerA,
+      partnerB: partnerB,
+    ),
+  );
 }

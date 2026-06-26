@@ -39,12 +39,12 @@ void main() {
     late LazyScheduleService lazy;
 
     Availability allDays(UserId u) => Availability(
-          userId: u,
-          availableWeekdays: const {1, 2, 3, 4, 5, 6, 7},
-          slotsByWeekday: const {},
-          blockedDates: const {},
-          unavailablePeriods: const [],
-        );
+      userId: u,
+      availableWeekdays: const {1, 2, 3, 4, 5, 6, 7},
+      slotsByWeekday: const {},
+      blockedDates: const {},
+      unavailablePeriods: const [],
+    );
 
     LazyScheduleService build(DateTime now) {
       final scheduling = SchedulingService(

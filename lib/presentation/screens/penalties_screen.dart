@@ -10,10 +10,10 @@ import '../providers/app_providers.dart';
 import '../providers/penalties_controller.dart';
 
 String severityLabel(Severity s) => switch (s) {
-      Severity.low => 'Leve',
-      Severity.medium => 'Media',
-      Severity.high => 'Alta',
-    };
+  Severity.low => 'Leve',
+  Severity.medium => 'Media',
+  Severity.high => 'Alta',
+};
 
 /// Pantalla CRUD de penitencias.
 class PenaltiesScreen extends ConsumerWidget {
@@ -41,7 +41,9 @@ class PenaltiesScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (penalties) {
           if (penalties.isEmpty) {
-            return const Center(child: Text('Sin penitencias. Crea la primera.'));
+            return const Center(
+              child: Text('Sin penitencias. Crea la primera.'),
+            );
           }
           return ListView.builder(
             itemCount: penalties.length,
@@ -128,8 +130,9 @@ class _PenaltyFormDialogState extends ConsumerState<PenaltyFormDialog> {
       setState(() => _imageId = blob.id);
     } on Object catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Imagen inválida: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Imagen inválida: $e')));
     }
   }
 
@@ -163,8 +166,9 @@ class _PenaltyFormDialogState extends ConsumerState<PenaltyFormDialog> {
     if (failure == null) {
       Navigator.of(context).pop();
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(failure.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.message)));
     }
   }
 

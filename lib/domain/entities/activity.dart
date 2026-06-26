@@ -34,18 +34,17 @@ final class Activity {
     MediaId? imageId,
     bool clearImage = false,
     DateTime? updatedAt,
-  }) =>
-      Activity(
-        id: id,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        category: category ?? this.category,
-        createdBy: createdBy,
-        active: active ?? this.active,
-        imageId: clearImage ? null : (imageId ?? this.imageId),
-        createdAt: createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-      );
+  }) => Activity(
+    id: id,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    category: category ?? this.category,
+    createdBy: createdBy,
+    active: active ?? this.active,
+    imageId: clearImage ? null : (imageId ?? this.imageId),
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -63,16 +62,16 @@ final class Activity {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        title,
-        description,
-        category,
-        createdBy,
-        active,
-        imageId,
-        createdAt,
-        updatedAt,
-      );
+    id,
+    title,
+    description,
+    category,
+    createdBy,
+    active,
+    imageId,
+    createdAt,
+    updatedAt,
+  );
 
   @override
   String toString() => 'Activity($id, "$title", active=$active)';

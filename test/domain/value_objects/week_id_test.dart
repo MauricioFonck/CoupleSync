@@ -11,9 +11,15 @@ void main() {
     });
 
     test('rechaza formatos inválidos', () {
-      expect(() => WeekId('2026-26'), throwsA(isA<DomainValidationException>()));
+      expect(
+        () => WeekId('2026-26'),
+        throwsA(isA<DomainValidationException>()),
+      );
       expect(() => WeekId('26-W01'), throwsA(isA<DomainValidationException>()));
-      expect(() => WeekId('2026-W99'), throwsA(isA<DomainValidationException>()));
+      expect(
+        () => WeekId('2026-W99'),
+        throwsA(isA<DomainValidationException>()),
+      );
     });
 
     test('fromDate calcula la semana ISO correcta', () {
@@ -23,10 +29,13 @@ void main() {
       expect(WeekId.fromDate(DateTime.utc(2026, 6, 25)).value, '2026-W26');
     });
 
-    test('fromDate maneja el borde de año (1-ene pertenece a semana previa)', () {
-      // 2023-01-01 es domingo -> pertenece a la semana 52 de 2022.
-      expect(WeekId.fromDate(DateTime.utc(2023, 1, 1)).value, '2022-W52');
-    });
+    test(
+      'fromDate maneja el borde de año (1-ene pertenece a semana previa)',
+      () {
+        // 2023-01-01 es domingo -> pertenece a la semana 52 de 2022.
+        expect(WeekId.fromDate(DateTime.utc(2023, 1, 1)).value, '2022-W52');
+      },
+    );
 
     test('igualdad por valor', () {
       expect(WeekId('2026-W26'), WeekId('2026-W26'));

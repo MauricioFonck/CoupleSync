@@ -11,14 +11,14 @@ void main() {
   final act1 = ActivityId('act1');
 
   ScheduledEvent baseEvent() => ScheduledEvent(
-        id: ScheduledEventId('e1'),
-        date: DateTime.utc(2026, 6, 25),
-        weekId: WeekId('2026-W26'),
-        activityIds: [act1],
-        status: CompletionStatus.pending,
-        confirmations: const [],
-        createdAt: DateTime.utc(2026, 6, 20),
-      );
+    id: ScheduledEventId('e1'),
+    date: DateTime.utc(2026, 6, 25),
+    weekId: WeekId('2026-W26'),
+    activityIds: [act1],
+    status: CompletionStatus.pending,
+    confirmations: const [],
+    createdAt: DateTime.utc(2026, 6, 20),
+  );
 
   group('ScheduledEvent confirmaciones', () {
     test('no está aprobado sin confirmaciones', () {

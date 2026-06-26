@@ -30,9 +30,9 @@ void main() {
   }
 
   MockFirebaseAuth signedIn(String uid) => MockFirebaseAuth(
-        signedIn: true,
-        mockUser: MockUser(uid: uid, displayName: uid),
-      );
+    signedIn: true,
+    mockUser: MockUser(uid: uid, displayName: uid),
+  );
 
   testWidgets('la agenda muestra el evento de la semana', (tester) async {
     final db = FakeFirebaseFirestore();
@@ -46,8 +46,9 @@ void main() {
     expect(find.textContaining('Pendiente'), findsOneWidget);
   });
 
-  testWidgets('completa el evento cuando el segundo usuario aprueba',
-      (tester) async {
+  testWidgets('completa el evento cuando el segundo usuario aprueba', (
+    tester,
+  ) async {
     final db = FakeFirebaseFirestore();
     await FirestoreScheduledEventRepository(db).save(currentWeekEvent());
     // El usuario B ya aprobó previamente.

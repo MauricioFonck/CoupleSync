@@ -28,7 +28,8 @@ class _AvailabilityEditor extends ConsumerStatefulWidget {
   final Availability initial;
 
   @override
-  ConsumerState<_AvailabilityEditor> createState() => _AvailabilityEditorState();
+  ConsumerState<_AvailabilityEditor> createState() =>
+      _AvailabilityEditorState();
 }
 
 class _AvailabilityEditorState extends ConsumerState<_AvailabilityEditor> {
@@ -67,8 +68,9 @@ class _AvailabilityEditorState extends ConsumerState<_AvailabilityEditor> {
       blockedDates: _blocked.toSet(),
       unavailablePeriods: widget.initial.unavailablePeriods,
     );
-    final failure =
-        await ref.read(availabilityControllerProvider.notifier).save(updated);
+    final failure = await ref
+        .read(availabilityControllerProvider.notifier)
+        .save(updated);
     if (!mounted) return;
     setState(() => _busy = false);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +87,10 @@ class _AvailabilityEditorState extends ConsumerState<_AvailabilityEditor> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Días disponibles', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          'Días disponibles',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,

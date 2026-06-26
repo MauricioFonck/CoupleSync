@@ -13,8 +13,9 @@ void main() {
     expect(find.text('CoupleSync'), findsOneWidget);
   });
 
-  testWidgets('con sesión muestra el dashboard dentro del shell',
-      (tester) async {
+  testWidgets('con sesión muestra el dashboard dentro del shell', (
+    tester,
+  ) async {
     await pumpApp(
       tester,
       auth: MockFirebaseAuth(

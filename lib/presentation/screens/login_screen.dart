@@ -26,10 +26,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    await ref.read(signInControllerProvider.notifier).signIn(
-          _emailController.text.trim(),
-          _passwordController.text,
-        );
+    await ref
+        .read(signInControllerProvider.notifier)
+        .signIn(_emailController.text.trim(), _passwordController.text);
   }
 
   @override
@@ -65,8 +64,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: const InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
                     autofillHints: const [AutofillHints.username],
-                    validator: (v) =>
-                        (v == null || !v.contains('@')) ? 'Email inválido' : null,
+                    validator: (v) => (v == null || !v.contains('@'))
+                        ? 'Email inválido'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -75,8 +75,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: const InputDecoration(labelText: 'Contraseña'),
                     obscureText: true,
                     autofillHints: const [AutofillHints.password],
-                    validator: (v) =>
-                        (v == null || v.isEmpty) ? 'Introduce la contraseña' : null,
+                    validator: (v) => (v == null || v.isEmpty)
+                        ? 'Introduce la contraseña'
+                        : null,
                   ),
                   const SizedBox(height: 8),
                   if (state.hasError)

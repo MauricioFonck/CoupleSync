@@ -10,8 +10,8 @@ class CreatePenaltyUseCase {
   const CreatePenaltyUseCase({
     required PenaltyRepositoryPort penaltyRepository,
     required IdGeneratorPort idGenerator,
-  })  : _repository = penaltyRepository,
-        _idGenerator = idGenerator;
+  }) : _repository = penaltyRepository,
+       _idGenerator = idGenerator;
 
   final PenaltyRepositoryPort _repository;
   final IdGeneratorPort _idGenerator;
@@ -40,9 +40,8 @@ class CreatePenaltyUseCase {
 
 /// Actualiza una penitencia existente.
 class UpdatePenaltyUseCase {
-  const UpdatePenaltyUseCase({
-    required PenaltyRepositoryPort penaltyRepository,
-  }) : _repository = penaltyRepository;
+  const UpdatePenaltyUseCase({required PenaltyRepositoryPort penaltyRepository})
+    : _repository = penaltyRepository;
 
   final PenaltyRepositoryPort _repository;
 
@@ -82,10 +81,7 @@ class SetPenaltyActiveUseCase {
 
   final PenaltyRepositoryPort _repository;
 
-  Future<Penalty> execute({
-    required PenaltyId id,
-    required bool active,
-  }) async {
+  Future<Penalty> execute({required PenaltyId id, required bool active}) async {
     final current = await _repository.getById(id);
     if (current == null) {
       throw EntityNotFoundException(
@@ -102,9 +98,8 @@ class SetPenaltyActiveUseCase {
 
 /// Elimina una penitencia.
 class DeletePenaltyUseCase {
-  const DeletePenaltyUseCase({
-    required PenaltyRepositoryPort penaltyRepository,
-  }) : _repository = penaltyRepository;
+  const DeletePenaltyUseCase({required PenaltyRepositoryPort penaltyRepository})
+    : _repository = penaltyRepository;
 
   final PenaltyRepositoryPort _repository;
 

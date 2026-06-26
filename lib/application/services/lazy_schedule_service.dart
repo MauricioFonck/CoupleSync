@@ -12,8 +12,8 @@ class LazyScheduleService {
   const LazyScheduleService({
     required SchedulingService scheduling,
     required ClockPort clock,
-  })  : _scheduling = scheduling,
-        _clock = clock;
+  }) : _scheduling = scheduling,
+       _clock = clock;
 
   final SchedulingService _scheduling;
   final ClockPort _clock;

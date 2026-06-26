@@ -10,8 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 import '_pump.dart';
 
 void main() {
-  testWidgets('el historial lista eventos pasados con su estado',
-      (tester) async {
+  testWidgets('el historial lista eventos pasados con su estado', (
+    tester,
+  ) async {
     final db = FakeFirebaseFirestore();
     await FirestoreScheduledEventRepository(db).save(
       ScheduledEvent(

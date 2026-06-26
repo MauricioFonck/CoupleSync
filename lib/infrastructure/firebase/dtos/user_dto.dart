@@ -5,10 +5,8 @@ part 'user_dto.g.dart';
 
 @freezed
 abstract class UserDto with _$UserDto {
-  const factory UserDto({
-    required String id,
-    required String displayName,
-  }) = _UserDto;
+  const factory UserDto({required String id, required String displayName}) =
+      _UserDto;
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);

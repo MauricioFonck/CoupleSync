@@ -25,9 +25,9 @@ final class WeekId {
     // Lunes=0 .. Domingo=6.
     final dayNr = (day.weekday + 6) % 7;
     // El jueves de la semana decide el año ISO.
-    final thursday = day.subtract(Duration(days: dayNr)).add(
-          const Duration(days: 3),
-        );
+    final thursday = day
+        .subtract(Duration(days: dayNr))
+        .add(const Duration(days: 3));
     final firstDayOfYear = DateTime.utc(thursday.year, 1, 1);
     final daysSinceFirst = thursday.difference(firstDayOfYear).inDays;
     final weekNr = 1 + (daysSinceFirst / 7).floor();

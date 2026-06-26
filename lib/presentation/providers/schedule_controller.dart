@@ -9,8 +9,9 @@ import '../../domain/value_objects/week_id.dart';
 import 'app_providers.dart';
 
 /// Semana visible en la agenda (por defecto, la semana actual).
-final scheduleWeekProvider =
-    NotifierProvider<ScheduleWeekNotifier, WeekId>(ScheduleWeekNotifier.new);
+final scheduleWeekProvider = NotifierProvider<ScheduleWeekNotifier, WeekId>(
+  ScheduleWeekNotifier.new,
+);
 
 class ScheduleWeekNotifier extends Notifier<WeekId> {
   @override
@@ -22,8 +23,8 @@ class ScheduleWeekNotifier extends Notifier<WeekId> {
 /// Eventos de la semana seleccionada, ordenados por fecha.
 final scheduleControllerProvider =
     AsyncNotifierProvider<ScheduleController, List<ScheduledEvent>>(
-  ScheduleController.new,
-);
+      ScheduleController.new,
+    );
 
 class ScheduleController extends AsyncNotifier<List<ScheduledEvent>> {
   @override
@@ -39,9 +40,9 @@ class ScheduleController extends AsyncNotifier<List<ScheduledEvent>> {
   }
 
   Future<AppFailure?> reschedule(ScheduledEventId id, DateTime newDate) async {
-    final result = await ref.read(schedulingServiceProvider).reschedule(
-          RescheduleEventCommand(eventId: id, newDate: newDate),
-        );
+    final result = await ref
+        .read(schedulingServiceProvider)
+        .reschedule(RescheduleEventCommand(eventId: id, newDate: newDate));
     final failure = result.failureOrNull;
     if (failure == null) {
       state = await AsyncValue.guard(build);

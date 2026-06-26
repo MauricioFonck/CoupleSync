@@ -6,7 +6,10 @@ import '_pump.dart';
 
 void main() {
   testWidgets('valida campos vacíos y no navega', (tester) async {
-    await pumpApp(tester, auth: MockFirebaseAuth(mockUser: MockUser(uid: 'A')));
+    await pumpApp(
+      tester,
+      auth: MockFirebaseAuth(mockUser: MockUser(uid: 'A')),
+    );
 
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pumpAndSettle();
@@ -26,10 +29,7 @@ void main() {
     );
 
     await tester.enterText(find.byKey(const Key('login_email')), 'a@x.com');
-    await tester.enterText(
-      find.byKey(const Key('login_password')),
-      'secret',
-    );
+    await tester.enterText(find.byKey(const Key('login_password')), 'secret');
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pumpAndSettle();
 

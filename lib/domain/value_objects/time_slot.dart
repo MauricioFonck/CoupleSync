@@ -27,11 +27,10 @@ final class TimeSlot {
     required int startMinute,
     required int endHour,
     required int endMinute,
-  }) =>
-      TimeSlot(
-        startMinutes: startHour * 60 + startMinute,
-        endMinutes: endHour * 60 + endMinute,
-      );
+  }) => TimeSlot(
+    startMinutes: startHour * 60 + startMinute,
+    endMinutes: endHour * 60 + endMinute,
+  );
 
   static const int _minutesPerDay = 24 * 60;
 

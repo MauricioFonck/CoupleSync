@@ -3,6 +3,7 @@ import 'package:couplesync/domain/entities/availability.dart';
 import 'package:couplesync/domain/entities/confirmation.dart';
 import 'package:couplesync/domain/entities/penalty.dart';
 import 'package:couplesync/domain/entities/scheduled_event.dart';
+import 'package:couplesync/domain/entities/streak_stats.dart';
 import 'package:couplesync/domain/entities/weekly_schedule.dart';
 import 'package:couplesync/domain/exceptions/domain_exception.dart';
 import 'package:couplesync/domain/ports/activity_repository_port.dart';
@@ -14,6 +15,7 @@ import 'package:couplesync/domain/ports/penalty_repository_port.dart';
 import 'package:couplesync/domain/ports/random_port.dart';
 import 'package:couplesync/domain/ports/scheduled_event_repository_port.dart';
 import 'package:couplesync/domain/ports/settings_repository_port.dart';
+import 'package:couplesync/domain/ports/statistics_repository_port.dart';
 import 'package:couplesync/domain/ports/weekly_schedule_repository_port.dart';
 import 'package:couplesync/domain/value_objects/date_range.dart';
 import 'package:couplesync/domain/value_objects/ids.dart';
@@ -144,6 +146,14 @@ class InMemoryWeeklyScheduleRepository
     store[schedule.weekId.value] = schedule;
     savedEvents.addAll(events);
   }
+}
+
+class InMemoryStatisticsRepository implements StatisticsRepositoryPort {
+  StreakStats? stored;
+  @override
+  Future<StreakStats?> get() async => stored;
+  @override
+  Future<void> save(StreakStats stats) async => stored = stats;
 }
 
 class InMemorySettingsRepository implements SettingsRepositoryPort {

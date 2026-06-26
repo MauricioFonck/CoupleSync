@@ -22,6 +22,14 @@ presentation  ──►  application  ──►  domain  ◄──  infrastructu
 ### `lib/application/` — orquestación
 `services/`, `commands/`, `queries/`
 - Solo importa `domain/`. Compone use cases. No conoce Firebase ni Flutter.
+- **Entradas:** los servicios reciben **commands** (escritura) y **queries** (lectura).
+- **Salidas / errores (convención):** todos los métodos de servicio devuelven
+  `Result<T>` (`Ok<T>` | `Err<T>`). El helper `runCatching` captura cualquier
+  excepción y la traduce a `AppFailure` con un `FailureKind`
+  (`validation | invariant | notFound | conflict | unexpected`) mediante
+  `AppFailure.fromException`. **Las excepciones de dominio nunca cruzan a la
+  presentación**; la UI hace `result.fold(onOk, onErr)` y decide cómo mostrar
+  cada `FailureKind`.
 
 ### `lib/infrastructure/` — adaptadores
 `firebase/`, `repositories/`, `datasources/`, `notifications/`, `authentication/`, `media/`

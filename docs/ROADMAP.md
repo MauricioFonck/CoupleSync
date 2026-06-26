@@ -227,21 +227,21 @@
 # Fase 3 — Aplicación
 **Dependencias:** Fase 2 · **Entregables:** capa `application/` que orquesta el dominio, con tests.
 
-### Plan 3.1 — Services de orquestación
-- [ ] `ActivityService`, `PenaltyService`, `AvailabilityService` que componen use cases.
-- [ ] `SchedulingService` (orquesta generación semanal + reprogramación).
-- [ ] `ConfirmationService` (orquesta confirmaciones y cierre de eventos).
-- [ ] `StatisticsService` (orquesta cálculo de rachas/KPIs).
+### Plan 3.1 — Services de orquestación ✅
+- [x] `ActivityService`, `PenaltyService`, `AvailabilityService` que componen use cases.
+- [x] `SchedulingService` (orquesta generación semanal + reprogramación + eventos de la semana).
+- [x] `ConfirmationService` (orquesta confirmaciones y cierre de eventos).
+- [x] `StatisticsService` (orquesta cálculo de rachas + snapshot persistido).
 
-### Plan 3.2 — Commands y Queries
-- [ ] Definir commands (escritura) y queries (lectura) como objetos/DTOs de entrada/salida de la capa.
-- [ ] Mapear errores de dominio a resultados de aplicación (Result/Either o excepciones controladas) — definir convención.
-- [ ] Tests de orquestación (services llaman a los use cases correctos en el orden correcto).
+### Plan 3.2 — Commands y Queries ✅
+- [x] Definir commands (escritura) y queries (lectura) como objetos de entrada de la capa.
+- [x] Mapear errores de dominio a `Result<T>` (`Ok`/`Err`) con `AppFailure`/`FailureKind` vía `runCatching`. Convención documentada en `docs/ARCHITECTURE.md`.
+- [x] Tests de orquestación (Ok/Err, mapeo de fallos, regla "ambos aprueban").
 
 **Definition of Done — Fase 3**
-- [ ] `application/` solo depende de `domain/` (verificado).
-- [ ] Tests de services en verde.
-- [ ] Convención de manejo de errores documentada.
+- [x] `application/` solo depende de `domain/` (verificado; sin imports de Firebase/Flutter).
+- [x] Tests de services en verde. *(Cobertura application 80.4%; total 105 tests.)*
+- [x] Convención de manejo de errores documentada (`docs/ARCHITECTURE.md`).
 
 ---
 

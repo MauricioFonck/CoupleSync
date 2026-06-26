@@ -323,11 +323,11 @@
 # Fase 6 — Módulos funcionales UI
 **Dependencias:** Fase 5 · **Entregables:** CRUDs y flujos funcionales con imágenes.
 
-### Plan 6.1 — CRUD Actividades (con imagen)
-- [ ] Lista de actividades (sin cargar blobs; thumbnails por `imageId` bajo demanda).
-- [ ] Formulario crear/editar con selector e **integración del pipeline de media** (Fase 4.4).
-- [ ] Activar/desactivar actividad.
-- [ ] Widget tests del flujo CRUD.
+### Plan 6.1 — CRUD Actividades (con imagen) ✅
+- [x] Lista de actividades (no carga blobs; solo indica si hay imagen — D1).
+- [x] Formulario crear/editar con `image_picker` + pipeline de media (procesa→guarda→`imageId`).
+- [x] Activar/desactivar (Switch) y eliminar; `ActivitiesController` (AsyncNotifier) refresca tras cada cambio.
+- [x] Widget tests del flujo CRUD (crear, validación, eliminar).
 
 ### Plan 6.2 — CRUD Penitencias (con imagen)
 - [ ] Lista, crear/editar, severidad, activar/desactivar, imagen opcional.

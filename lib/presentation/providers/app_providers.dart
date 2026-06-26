@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/services/activity_service.dart';
 import '../../application/services/availability_service.dart';
 import '../../application/services/confirmation_service.dart';
+import '../../application/services/couple_service.dart';
+import '../../application/services/lazy_schedule_service.dart';
 import '../../application/services/penalty_service.dart';
 import '../../application/services/scheduling_service.dart';
 import '../../application/services/statistics_service.dart';
@@ -47,6 +49,14 @@ final confirmationServiceProvider = Provider<ConfirmationService>(
 
 final statisticsServiceProvider = Provider<StatisticsService>(
   (ref) => ref.watch(compositionRootProvider).statisticsService,
+);
+
+final coupleServiceProvider = Provider<CoupleService>(
+  (ref) => ref.watch(compositionRootProvider).coupleService,
+);
+
+final lazyScheduleServiceProvider = Provider<LazyScheduleService>(
+  (ref) => ref.watch(compositionRootProvider).lazyScheduleService,
 );
 
 final mediaProcessorProvider = Provider<MediaProcessorPort>(

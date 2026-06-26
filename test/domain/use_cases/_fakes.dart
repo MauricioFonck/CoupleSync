@@ -4,6 +4,7 @@ import 'package:couplesync/domain/entities/confirmation.dart';
 import 'package:couplesync/domain/entities/penalty.dart';
 import 'package:couplesync/domain/entities/scheduled_event.dart';
 import 'package:couplesync/domain/entities/streak_stats.dart';
+import 'package:couplesync/domain/entities/user.dart';
 import 'package:couplesync/domain/entities/weekly_schedule.dart';
 import 'package:couplesync/domain/exceptions/domain_exception.dart';
 import 'package:couplesync/domain/ports/activity_repository_port.dart';
@@ -16,6 +17,7 @@ import 'package:couplesync/domain/ports/random_port.dart';
 import 'package:couplesync/domain/ports/scheduled_event_repository_port.dart';
 import 'package:couplesync/domain/ports/settings_repository_port.dart';
 import 'package:couplesync/domain/ports/statistics_repository_port.dart';
+import 'package:couplesync/domain/ports/user_repository_port.dart';
 import 'package:couplesync/domain/ports/weekly_schedule_repository_port.dart';
 import 'package:couplesync/domain/value_objects/date_range.dart';
 import 'package:couplesync/domain/value_objects/ids.dart';
@@ -146,6 +148,14 @@ class InMemoryWeeklyScheduleRepository
     store[schedule.weekId.value] = schedule;
     savedEvents.addAll(events);
   }
+}
+
+class InMemoryUserRepository implements UserRepositoryPort {
+  final Map<String, User> store = {};
+  @override
+  Future<List<User>> getAll() async => store.values.toList();
+  @override
+  Future<void> upsert(User user) async => store[user.id.value] = user;
 }
 
 class InMemoryStatisticsRepository implements StatisticsRepositoryPort {

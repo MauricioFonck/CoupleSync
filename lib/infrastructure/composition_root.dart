@@ -5,6 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import '../application/services/activity_service.dart';
 import '../application/services/availability_service.dart';
 import '../application/services/confirmation_service.dart';
+import '../application/services/couple_service.dart';
+import '../application/services/lazy_schedule_service.dart';
 import '../application/services/penalty_service.dart';
 import '../application/services/scheduling_service.dart';
 import '../application/services/statistics_service.dart';
@@ -35,6 +37,7 @@ import 'repositories/firestore_penalty_repository.dart';
 import 'repositories/firestore_scheduled_event_repository.dart';
 import 'repositories/firestore_settings_repository.dart';
 import 'repositories/firestore_statistics_repository.dart';
+import 'repositories/firestore_user_repository.dart';
 import 'repositories/firestore_weekly_schedule_repository.dart';
 import 'system_clock.dart';
 import 'uuid_id_generator.dart';
@@ -65,6 +68,7 @@ class CompositionRoot {
     final weeklySchedules = FirestoreWeeklyScheduleRepository(firestore);
     final settings = FirestoreSettingsRepository(firestore);
     final statistics = FirestoreStatisticsRepository(firestore);
+    final users = FirestoreUserRepository(firestore);
     mediaRepository = FirestoreMediaRepository(firestore);
 
     // Adaptadores de servicio.
@@ -148,6 +152,12 @@ class CompositionRoot {
       ),
       statisticsRepository: statistics,
     );
+
+    coupleService = CoupleService(userRepository: users);
+    lazyScheduleService = LazyScheduleService(
+      scheduling: schedulingService,
+      clock: clockPort,
+    );
   }
 
   late final AuthPort authPort;
@@ -161,4 +171,6 @@ class CompositionRoot {
   late final SchedulingService schedulingService;
   late final ConfirmationService confirmationService;
   late final StatisticsService statisticsService;
+  late final CoupleService coupleService;
+  late final LazyScheduleService lazyScheduleService;
 }

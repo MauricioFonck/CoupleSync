@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/app_providers.dart';
 import '../screens/activities_screen.dart';
+import '../screens/availability_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/penalties_screen.dart';
@@ -54,8 +55,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/availability',
-            builder: (context, state) =>
-                const PlaceholderScreen(title: 'Disponibilidad'),
+            builder: (context, state) => const AvailabilityScreen(),
           ),
           GoRoute(
             path: '/schedule',

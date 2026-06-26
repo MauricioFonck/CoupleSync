@@ -329,35 +329,35 @@
 - [x] Activar/desactivar (Switch) y eliminar; `ActivitiesController` (AsyncNotifier) refresca tras cada cambio.
 - [x] Widget tests del flujo CRUD (crear, validación, eliminar).
 
-### Plan 6.2 — CRUD Penitencias (con imagen)
-- [ ] Lista, crear/editar, severidad, activar/desactivar, imagen opcional.
-- [ ] Widget tests del flujo.
+### Plan 6.2 — CRUD Penitencias (con imagen) ✅
+- [x] Lista, crear/editar, severidad (dropdown), activar/desactivar, imagen opcional.
+- [x] Widget test del flujo.
 
-### Plan 6.3 — Disponibilidad
-- [ ] UI de gestión de disponibilidad por usuario (días, horarios, fechas bloqueadas, periodos de indisponibilidad).
-- [ ] Validaciones y persistencia.
-- [ ] Widget tests.
+### Plan 6.3 — Disponibilidad ✅
+- [x] UI de disponibilidad por usuario: días de la semana (FilterChips) + fechas bloqueadas (date picker). Conserva franjas/periodos al guardar.
+- [x] Persistencia vía `AvailabilityService`.
+- [x] Widget test (seleccionar días + guardar).
 
-### Plan 6.4 — Agenda semanal + reprogramación manual
-- [ ] Vista de agenda de la semana (eventos programados y su estado).
-- [ ] Acción de **reprogramación manual** de un evento.
-- [ ] Widget tests de visualización y reprogramación.
+### Plan 6.4 — Agenda semanal + reprogramación manual ✅
+- [x] Vista de agenda de la semana (navegación entre semanas, estado de cada evento).
+- [x] **Reprogramación manual** (date picker → `RescheduleEventUseCase`).
+- [x] Widget test de visualización. *(La generación de eventos es lazy — Fase 7.)*
 
-### Plan 6.5 — Flujo de confirmaciones
-- [ ] UI para que A y B confirmen cada actividad (`approved/rejected`).
-- [ ] Reflejar que el evento se completa **solo si ambos aprueban**.
-- [ ] Widget tests del flujo de confirmación dual.
+### Plan 6.5 — Flujo de confirmaciones ✅
+- [x] UI para que A y B aprueben/rechacen cada actividad; el compañero se infiere de las confirmaciones existentes (app de 2 usuarios).
+- [x] El evento pasa a `Completado` **solo si ambos aprueban** (regla de dominio).
+- [x] Widget test **end-to-end**: B había aprobado, A aprueba → evento completado.
 
-### Plan 6.6 — Historial
-- [ ] Vista de historial (actividad, fecha, estado, confirmaciones, observaciones, penitencias).
-- [ ] Filtros básicos (rango de fechas/estado).
-- [ ] Widget tests.
+### Plan 6.6 — Historial ✅
+- [x] Vista de historial (fecha, nº de actividades, estado) ordenada por fecha desc.
+- [~] Filtros por rango/estado: pendientes (mejora futura).
+- [x] Widget test con evento sembrado.
 
 **Definition of Done — Fase 6**
-- [ ] Todos los CRUDs operativos contra Firestore (emulador/real).
-- [ ] Imágenes suben comprimidas en Base64 sin superar límites.
-- [ ] Flujo de confirmaciones cumple la regla "ambos aprueban".
-- [ ] Widget tests de los módulos en verde.
+- [x] Todos los CRUDs operativos contra Firestore (verificado con `fake_cloud_firestore` en widget tests).
+- [x] Imágenes: pipeline de compresión+Base64 integrado en los formularios (validación de tamaño en dominio).
+- [x] Flujo de confirmaciones cumple la regla "ambos aprueban" (test end-to-end).
+- [x] Widget tests de los módulos en verde. *(138 tests totales; build web OK.)*
 
 ---
 

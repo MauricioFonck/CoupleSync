@@ -6,6 +6,7 @@ import '../providers/app_providers.dart';
 import '../screens/activities_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/penalties_screen.dart';
 import '../screens/placeholder_screen.dart';
 import '../widgets/app_shell.dart';
 
@@ -49,8 +50,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/penalties',
-            builder: (context, state) =>
-                const PlaceholderScreen(title: 'Penitencias'),
+            builder: (context, state) => const PenaltiesScreen(),
           ),
           GoRoute(
             path: '/availability',

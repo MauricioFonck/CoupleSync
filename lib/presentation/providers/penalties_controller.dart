@@ -8,38 +8,33 @@ import '../../domain/entities/penalty.dart';
 import '../../domain/value_objects/ids.dart';
 import 'app_providers.dart';
 
-final penaltiesControllerProvider =
-    AsyncNotifierProvider<PenaltiesController, List<Penalty>>(
-      PenaltiesController.new,
-    );
+/// Lista de penitencias **en tiempo real** (sincronizada entre A y B).
+final penaltiesProvider = StreamProvider<List<Penalty>>(
+  (ref) => ref.watch(penaltyServiceProvider).watchAll(),
+);
 
-class PenaltiesController extends AsyncNotifier<List<Penalty>> {
-  PenaltyService get _service => ref.read(penaltyServiceProvider);
+/// Acciones de mutación de penitencias. La lista es un *stream*, así que no hay
+/// que recargar manualmente tras cada cambio.
+final penaltiesActionsProvider = Provider<PenaltiesActions>(
+  (ref) => PenaltiesActions(ref.read(penaltyServiceProvider)),
+);
 
-  @override
-  Future<List<Penalty>> build() => _load();
+class PenaltiesActions {
+  const PenaltiesActions(this._service);
 
-  Future<List<Penalty>> _load() async {
-    final result = await _service.list();
-    return result.fold((value) => value, (failure) => throw failure);
-  }
+  final PenaltyService _service;
 
   Future<AppFailure?> create(CreatePenaltyCommand command) =>
-      _run(() => _service.create(command));
+      _failure(_service.create(command));
 
   Future<AppFailure?> editPenalty(UpdatePenaltyCommand command) =>
-      _run(() => _service.update(command));
+      _failure(_service.update(command));
 
   Future<AppFailure?> setActive(PenaltyId id, {required bool active}) =>
-      _run(() => _service.setActive(id, active: active));
+      _failure(_service.setActive(id, active: active));
 
-  Future<AppFailure?> delete(PenaltyId id) => _run(() => _service.delete(id));
+  Future<AppFailure?> delete(PenaltyId id) => _failure(_service.delete(id));
 
-  Future<AppFailure?> _run<T>(Future<Result<T>> Function() action) async {
-    final failure = (await action()).failureOrNull;
-    if (failure == null) {
-      state = await AsyncValue.guard(_load);
-    }
-    return failure;
-  }
+  Future<AppFailure?> _failure<T>(Future<Result<T>> action) async =>
+      (await action).failureOrNull;
 }

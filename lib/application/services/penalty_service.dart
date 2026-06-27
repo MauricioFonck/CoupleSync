@@ -30,6 +30,9 @@ class PenaltyService {
   final GeneratePenaltyUseCase _generate;
   final PenaltyRepositoryPort _repository;
 
+  /// Flujo en tiempo real de todas las penitencias (sincronizado entre A y B).
+  Stream<List<Penalty>> watchAll() => _repository.watchAll();
+
   Future<Result<Penalty>> create(CreatePenaltyCommand command) => runCatching(
     () => _create.execute(
       title: command.title,

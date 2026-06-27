@@ -24,6 +24,12 @@ class FirestorePenaltyRepository implements PenaltyRepositoryPort {
   }
 
   @override
+  Stream<List<Penalty>> watchAll() => _col.snapshots().map(
+    (snap) =>
+        snap.docs.map((d) => PenaltyDto.fromJson(d.data()).toDomain()).toList(),
+  );
+
+  @override
   Future<List<Penalty>> getActive() async {
     final snap = await _col.where('active', isEqualTo: true).get();
     return snap.docs

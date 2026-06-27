@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/app_failure.dart';
 import '../../application/commands/commands.dart';
-import '../../application/queries/queries.dart';
+import '../../application/services/scheduling_service.dart';
 import '../../domain/entities/scheduled_event.dart';
 import '../../domain/value_objects/ids.dart';
 import '../../domain/value_objects/week_id.dart';
@@ -20,33 +20,29 @@ class ScheduleWeekNotifier extends Notifier<WeekId> {
   void setWeek(WeekId week) => state = week;
 }
 
-/// Eventos de la semana seleccionada, ordenados por fecha.
-final scheduleControllerProvider =
-    AsyncNotifierProvider<ScheduleController, List<ScheduledEvent>>(
-      ScheduleController.new,
-    );
+/// Eventos de la semana seleccionada **en tiempo real**, ordenados por fecha.
+final scheduleEventsProvider = StreamProvider<List<ScheduledEvent>>((ref) {
+  final week = ref.watch(scheduleWeekProvider);
+  return ref
+      .watch(schedulingServiceProvider)
+      .watchWeek(week)
+      .map(
+        (events) => events.toList()..sort((a, b) => a.date.compareTo(b.date)),
+      );
+});
 
-class ScheduleController extends AsyncNotifier<List<ScheduledEvent>> {
-  @override
-  Future<List<ScheduledEvent>> build() async {
-    final week = ref.watch(scheduleWeekProvider);
-    final result = await ref
-        .read(schedulingServiceProvider)
-        .eventsOfWeek(WeekEventsQuery(week));
-    return result.fold(
-      (events) => events.toList()..sort((a, b) => a.date.compareTo(b.date)),
-      (failure) => throw failure,
-    );
-  }
+/// Acciones sobre la agenda (reprogramación). Los cambios se reflejan solos.
+final scheduleActionsProvider = Provider<ScheduleActions>(
+  (ref) => ScheduleActions(ref.read(schedulingServiceProvider)),
+);
 
-  Future<AppFailure?> reschedule(ScheduledEventId id, DateTime newDate) async {
-    final result = await ref
-        .read(schedulingServiceProvider)
-        .reschedule(RescheduleEventCommand(eventId: id, newDate: newDate));
-    final failure = result.failureOrNull;
-    if (failure == null) {
-      state = await AsyncValue.guard(build);
-    }
-    return failure;
-  }
+class ScheduleActions {
+  const ScheduleActions(this._service);
+
+  final SchedulingService _service;
+
+  Future<AppFailure?> reschedule(ScheduledEventId id, DateTime newDate) async =>
+      (await _service.reschedule(
+        RescheduleEventCommand(eventId: id, newDate: newDate),
+      )).failureOrNull;
 }

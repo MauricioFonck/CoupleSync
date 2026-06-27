@@ -37,7 +37,7 @@ class ScheduleScreen extends ConsumerWidget {
     );
     if (picked == null) return;
     await ref
-        .read(scheduleControllerProvider.notifier)
+        .read(scheduleActionsProvider)
         .reschedule(
           event.id,
           DateTime.utc(picked.year, picked.month, picked.day),
@@ -47,7 +47,7 @@ class ScheduleScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final week = ref.watch(scheduleWeekProvider);
-    final state = ref.watch(scheduleControllerProvider);
+    final state = ref.watch(scheduleEventsProvider);
 
     return Column(
       children: [

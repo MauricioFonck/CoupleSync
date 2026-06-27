@@ -23,7 +23,8 @@ class ActivitiesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(activitiesControllerProvider);
+    final state = ref.watch(activitiesProvider);
+    final actions = ref.read(activitiesActionsProvider);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -54,15 +55,12 @@ class ActivitiesScreen extends ConsumerWidget {
                   children: [
                     Switch(
                       value: a.active,
-                      onChanged: (value) => ref
-                          .read(activitiesControllerProvider.notifier)
-                          .setActive(a.id, active: value),
+                      onChanged: (value) =>
+                          actions.setActive(a.id, active: value),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => ref
-                          .read(activitiesControllerProvider.notifier)
-                          .delete(a.id),
+                      onPressed: () => actions.delete(a.id),
                     ),
                   ],
                 ),
@@ -138,11 +136,11 @@ class _ActivityFormDialogState extends ConsumerState<ActivityFormDialog> {
     if (createdBy == null) return;
 
     setState(() => _busy = true);
-    final controller = ref.read(activitiesControllerProvider.notifier);
+    final actions = ref.read(activitiesActionsProvider);
     final category = ActivityCategory(_category.text.trim());
 
     final failure = _isEdit
-        ? await controller.editActivity(
+        ? await actions.editActivity(
             UpdateActivityCommand(
               id: widget.activity!.id,
               title: _title.text.trim(),
@@ -152,7 +150,7 @@ class _ActivityFormDialogState extends ConsumerState<ActivityFormDialog> {
               clearImage: _imageId == null,
             ),
           )
-        : await controller.create(
+        : await actions.create(
             CreateActivityCommand(
               title: _title.text.trim(),
               description: _description.text.trim(),

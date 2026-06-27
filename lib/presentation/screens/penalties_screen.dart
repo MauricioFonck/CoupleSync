@@ -28,7 +28,8 @@ class PenaltiesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(penaltiesControllerProvider);
+    final state = ref.watch(penaltiesProvider);
+    final actions = ref.read(penaltiesActionsProvider);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -59,15 +60,12 @@ class PenaltiesScreen extends ConsumerWidget {
                   children: [
                     Switch(
                       value: p.active,
-                      onChanged: (value) => ref
-                          .read(penaltiesControllerProvider.notifier)
-                          .setActive(p.id, active: value),
+                      onChanged: (value) =>
+                          actions.setActive(p.id, active: value),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => ref
-                          .read(penaltiesControllerProvider.notifier)
-                          .delete(p.id),
+                      onPressed: () => actions.delete(p.id),
                     ),
                   ],
                 ),
@@ -139,10 +137,10 @@ class _PenaltyFormDialogState extends ConsumerState<PenaltyFormDialog> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
-    final controller = ref.read(penaltiesControllerProvider.notifier);
+    final actions = ref.read(penaltiesActionsProvider);
 
     final failure = _isEdit
-        ? await controller.editPenalty(
+        ? await actions.editPenalty(
             UpdatePenaltyCommand(
               id: widget.penalty!.id,
               title: _title.text.trim(),
@@ -152,7 +150,7 @@ class _PenaltyFormDialogState extends ConsumerState<PenaltyFormDialog> {
               clearImage: _imageId == null,
             ),
           )
-        : await controller.create(
+        : await actions.create(
             CreatePenaltyCommand(
               title: _title.text.trim(),
               description: _description.text.trim(),

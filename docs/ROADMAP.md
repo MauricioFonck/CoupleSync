@@ -519,6 +519,30 @@
 
 ---
 
+## Anexo — Sincronización en tiempo real (toda la app) ✅
+
+Toda la aplicación se sincroniza en vivo entre A y B mediante *streams* de
+Firestore (`.snapshots()`), siguiendo el patrón **puerto `watch*` → adaptador
+Firestore → método `watch*` del servicio → `StreamProvider` en presentación**.
+Las mutaciones se exponen en providers `*Actions` y ya no recargan a mano: el
+stream refleja el cambio solo.
+
+- [x] **Ruleta**: ideas e historial (`watchAll`).
+- [x] **Actividades**: lista (`watchAll`).
+- [x] **Penitencias**: lista (`watchAll`).
+- [x] **Disponibilidad**: por usuario (`watchForUser`).
+- [x] **Agenda**: eventos de la semana (`watchByWeek`, hidratando confirmaciones).
+- [x] **Historial**: eventos por rango (`watchByDateRange`).
+- [x] **Dashboard**: KPIs y rachas derivados del stream de historial (recalcula y
+  persiste el snapshot en cada emisión).
+
+**Limitación conocida**: una confirmación individual (a la espera del segundo
+usuario) se escribe en la subcolección y **no** re-dispara el stream del evento
+padre; el cambio se refleja en vivo cuando el evento cambia de estado (p. ej. al
+completarse porque ambos aprobaron). El estado final siempre es consistente.
+
+---
+
 ## Riesgos técnicos señalados
 - **Límite 1 MiB/documento Firestore** para Base64 → mitigado por compresión + validación de tamaño + umbral de guarda (D1).
 - **Doble generación semanal** si A y B abren a la vez → mitigado por guard transaccional (D2).

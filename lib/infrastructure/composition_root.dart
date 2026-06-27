@@ -127,6 +127,7 @@ class CompositionRoot {
       setAvailability: SetAvailabilityUseCase(
         availabilityRepository: availability,
       ),
+      availabilityRepository: availability,
     );
 
     schedulingService = SchedulingService(

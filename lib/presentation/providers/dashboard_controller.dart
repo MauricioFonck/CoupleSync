@@ -24,27 +24,31 @@ class DashboardData {
   double get compliance => scheduled == 0 ? 0 : completed / scheduled;
 }
 
-/// Recalcula las rachas (y persiste el snapshot) y agrega contadores por estado.
-final dashboardProvider = FutureProvider<DashboardData>((ref) async {
-  final statsResult = await ref.watch(statisticsServiceProvider).refresh();
-  final stats = statsResult.fold((value) => value, (failure) => throw failure);
+/// KPIs y rachas **en tiempo real**: escucha el historial de eventos y, en cada
+/// cambio, recalcula las rachas (persiste el snapshot) y agrega los contadores
+/// por estado.
+final dashboardProvider = StreamProvider<DashboardData>((ref) {
+  final statistics = ref.watch(statisticsServiceProvider);
+  final range = DateRange(start: DateTime.utc(2000), end: DateTime.utc(2100));
 
-  final eventsResult = await ref
-      .watch(schedulingServiceProvider)
-      .history(DateRange(start: DateTime.utc(2000), end: DateTime.utc(2100)));
-  final events = eventsResult.fold(
-    (value) => value,
-    (failure) => throw failure,
-  );
+  return ref.watch(schedulingServiceProvider).watchHistory(range).asyncMap((
+    events,
+  ) async {
+    final statsResult = await statistics.refresh();
+    final stats = statsResult.fold(
+      (value) => value,
+      (failure) => throw failure,
+    );
 
-  int countBy(CompletionStatus status) =>
-      events.where((e) => e.status == status).length;
+    int countBy(CompletionStatus status) =>
+        events.where((e) => e.status == status).length;
 
-  return DashboardData(
-    stats: stats,
-    scheduled: events.length,
-    completed: countBy(CompletionStatus.completed),
-    pending: countBy(CompletionStatus.pending),
-    missed: countBy(CompletionStatus.missed),
-  );
+    return DashboardData(
+      stats: stats,
+      scheduled: events.length,
+      completed: countBy(CompletionStatus.completed),
+      pending: countBy(CompletionStatus.pending),
+      missed: countBy(CompletionStatus.missed),
+    );
+  });
 });

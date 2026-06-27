@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_providers.dart';
-import 'schedule_controller.dart';
 
 /// Arranque al entrar autenticado: registra el perfil del usuario y dispara la
 /// *lazy generation* de la agenda si se conocen los dos miembros de la pareja
@@ -35,9 +34,8 @@ final homeBootstrapProvider = FutureProvider<void>((ref) async {
   );
   if (partnerB == partnerA) return;
 
+  // La agenda es un stream en tiempo real: los eventos generados aparecen solos.
   await ref
       .read(lazyScheduleServiceProvider)
       .ensureUpcoming(partnerA: partnerA, partnerB: partnerB);
-
-  ref.invalidate(scheduleControllerProvider);
 });

@@ -25,6 +25,15 @@ class FirestoreAvailabilityRepository implements AvailabilityRepositoryPort {
   }
 
   @override
+  Stream<Availability> watchForUser(UserId userId) =>
+      _col.doc(userId.value).snapshots().map((doc) {
+        final data = doc.data();
+        return data == null
+            ? Availability.empty(userId)
+            : AvailabilityDto.fromJson(data).toDomain();
+      });
+
+  @override
   Future<void> save(Availability availability) =>
       _col.doc(availability.userId.value).set(availability.toDto().toJson());
 }

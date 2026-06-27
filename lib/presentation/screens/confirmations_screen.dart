@@ -5,7 +5,7 @@ import '../../application/commands/commands.dart';
 import '../../domain/entities/scheduled_event.dart';
 import '../../domain/value_objects/ids.dart';
 import '../../domain/value_objects/statuses.dart';
-import '../providers/activities_controller.dart';
+import '../providers/activities_controller.dart' show activitiesProvider;
 import '../providers/app_providers.dart';
 
 String confirmationLabel(ConfirmationStatus? s) => switch (s) {
@@ -90,8 +90,7 @@ class _ConfirmationsScreenState extends ConsumerState<ConfirmationsScreen> {
   @override
   Widget build(BuildContext context) {
     final current = ref.watch(currentUserIdProvider);
-    final activities =
-        ref.watch(activitiesControllerProvider).asData?.value ?? const [];
+    final activities = ref.watch(activitiesProvider).asData?.value ?? const [];
     final titleById = {for (final a in activities) a.id.value: a.title};
 
     return Scaffold(

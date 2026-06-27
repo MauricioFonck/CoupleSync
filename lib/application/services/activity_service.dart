@@ -26,6 +26,9 @@ class ActivityService {
   final DeleteActivityUseCase _delete;
   final ActivityRepositoryPort _repository;
 
+  /// Flujo en tiempo real de todas las actividades (sincronizado entre A y B).
+  Stream<List<Activity>> watchAll() => _repository.watchAll();
+
   Future<Result<Activity>> create(CreateActivityCommand command) => runCatching(
     () => _create.execute(
       title: command.title,

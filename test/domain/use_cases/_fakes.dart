@@ -64,6 +64,8 @@ class InMemoryActivityRepository implements ActivityRepositoryPort {
   @override
   Future<List<Activity>> getAll() async => store.values.toList();
   @override
+  Stream<List<Activity>> watchAll() => Stream.value(store.values.toList());
+  @override
   Future<Activity?> getById(ActivityId id) async => store[id.value];
   @override
   Future<void> save(Activity activity) async =>
@@ -80,6 +82,8 @@ class InMemoryPenaltyRepository implements PenaltyRepositoryPort {
   @override
   Future<List<Penalty>> getAll() async => store.values.toList();
   @override
+  Stream<List<Penalty>> watchAll() => Stream.value(store.values.toList());
+  @override
   Future<Penalty?> getById(PenaltyId id) async => store[id.value];
   @override
   Future<void> save(Penalty penalty) async => store[penalty.id.value] = penalty;
@@ -90,6 +94,9 @@ class InMemoryAvailabilityRepository implements AvailabilityRepositoryPort {
   @override
   Future<Availability> getForUser(UserId userId) async =>
       store[userId.value] ?? Availability.empty(userId);
+  @override
+  Stream<Availability> watchForUser(UserId userId) =>
+      Stream.value(store[userId.value] ?? Availability.empty(userId));
   @override
   Future<void> save(Availability availability) async =>
       store[availability.userId.value] = availability;
@@ -105,6 +112,12 @@ class InMemoryScheduledEventRepository implements ScheduledEventRepositoryPort {
   @override
   Future<List<ScheduledEvent>> getByDateRange(DateRange range) async =>
       store.values.where((e) => range.contains(e.date)).toList();
+  @override
+  Stream<List<ScheduledEvent>> watchByWeek(WeekId weekId) =>
+      Stream.value(store.values.where((e) => e.weekId == weekId).toList());
+  @override
+  Stream<List<ScheduledEvent>> watchByDateRange(DateRange range) =>
+      Stream.value(store.values.where((e) => range.contains(e.date)).toList());
   @override
   Future<void> save(ScheduledEvent event) async =>
       store[event.id.value] = event;

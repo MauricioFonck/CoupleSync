@@ -63,6 +63,26 @@ class FirestoreScheduledEventRepository
   }
 
   @override
+  Stream<List<ScheduledEvent>> watchByWeek(WeekId weekId) => _col
+      .where('weekId', isEqualTo: weekId.value)
+      .snapshots()
+      .asyncMap(
+        (snap) => Future.wait(snap.docs.map((d) => _hydrate(d.data()))),
+      );
+
+  @override
+  Stream<List<ScheduledEvent>> watchByDateRange(DateRange range) => _col
+      .where(
+        'date',
+        isGreaterThanOrEqualTo: range.start.toIso8601String(),
+        isLessThanOrEqualTo: range.end.toIso8601String(),
+      )
+      .snapshots()
+      .asyncMap(
+        (snap) => Future.wait(snap.docs.map((d) => _hydrate(d.data()))),
+      );
+
+  @override
   Future<void> save(ScheduledEvent event) =>
       _col.doc(event.id.value).set(event.toDto().toJson());
 }

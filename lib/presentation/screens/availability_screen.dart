@@ -13,7 +13,7 @@ class AvailabilityScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(availabilityControllerProvider);
+    final state = ref.watch(availabilityProvider);
     return state.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Error: $e')),
@@ -68,9 +68,7 @@ class _AvailabilityEditorState extends ConsumerState<_AvailabilityEditor> {
       blockedDates: _blocked.toSet(),
       unavailablePeriods: widget.initial.unavailablePeriods,
     );
-    final failure = await ref
-        .read(availabilityControllerProvider.notifier)
-        .save(updated);
+    final failure = await ref.read(availabilityActionsProvider).save(updated);
     if (!mounted) return;
     setState(() => _busy = false);
     ScaffoldMessenger.of(context).showSnackBar(

@@ -8,41 +8,34 @@ import '../../domain/entities/activity.dart';
 import '../../domain/value_objects/ids.dart';
 import 'app_providers.dart';
 
-/// Controlador del módulo de actividades: carga la lista y ejecuta el CRUD,
-/// refrescando el estado tras cada cambio. Los métodos devuelven `AppFailure?`
+/// Lista de actividades **en tiempo real** (sincronizada entre A y B).
+final activitiesProvider = StreamProvider<List<Activity>>(
+  (ref) => ref.watch(activityServiceProvider).watchAll(),
+);
+
+/// Acciones de mutación de actividades. Como la lista es un *stream*, no hace
+/// falta recargar manualmente tras cada cambio. Devuelven `AppFailure?`
 /// (`null` = éxito) para que la UI muestre el error sin conocer el dominio.
-final activitiesControllerProvider =
-    AsyncNotifierProvider<ActivitiesController, List<Activity>>(
-      ActivitiesController.new,
-    );
+final activitiesActionsProvider = Provider<ActivitiesActions>(
+  (ref) => ActivitiesActions(ref.read(activityServiceProvider)),
+);
 
-class ActivitiesController extends AsyncNotifier<List<Activity>> {
-  ActivityService get _service => ref.read(activityServiceProvider);
+class ActivitiesActions {
+  const ActivitiesActions(this._service);
 
-  @override
-  Future<List<Activity>> build() => _load();
-
-  Future<List<Activity>> _load() async {
-    final result = await _service.list();
-    return result.fold((value) => value, (failure) => throw failure);
-  }
+  final ActivityService _service;
 
   Future<AppFailure?> create(CreateActivityCommand command) =>
-      _run(() => _service.create(command));
+      _failure(_service.create(command));
 
   Future<AppFailure?> editActivity(UpdateActivityCommand command) =>
-      _run(() => _service.update(command));
+      _failure(_service.update(command));
 
   Future<AppFailure?> setActive(ActivityId id, {required bool active}) =>
-      _run(() => _service.setActive(id, active: active));
+      _failure(_service.setActive(id, active: active));
 
-  Future<AppFailure?> delete(ActivityId id) => _run(() => _service.delete(id));
+  Future<AppFailure?> delete(ActivityId id) => _failure(_service.delete(id));
 
-  Future<AppFailure?> _run<T>(Future<Result<T>> Function() action) async {
-    final failure = (await action()).failureOrNull;
-    if (failure == null) {
-      state = await AsyncValue.guard(_load);
-    }
-    return failure;
-  }
+  Future<AppFailure?> _failure<T>(Future<Result<T>> action) async =>
+      (await action).failureOrNull;
 }

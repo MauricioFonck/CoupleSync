@@ -24,6 +24,13 @@ class FirestoreActivityRepository implements ActivityRepositoryPort {
   }
 
   @override
+  Stream<List<Activity>> watchAll() => _col.snapshots().map(
+    (snap) => snap.docs
+        .map((d) => ActivityDto.fromJson(d.data()).toDomain())
+        .toList(),
+  );
+
+  @override
   Future<List<Activity>> getActive() async {
     final snap = await _col.where('active', isEqualTo: true).get();
     return snap.docs

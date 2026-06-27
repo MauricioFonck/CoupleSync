@@ -5,5 +5,8 @@ import '../value_objects/ids.dart';
 abstract interface class AvailabilityRepositoryPort {
   /// Devuelve la disponibilidad del usuario; vacía si nunca la configuró.
   Future<Availability> getForUser(UserId userId);
+
+  /// Flujo en tiempo real de la disponibilidad del usuario.
+  Stream<Availability> watchForUser(UserId userId);
   Future<void> save(Availability availability);
 }

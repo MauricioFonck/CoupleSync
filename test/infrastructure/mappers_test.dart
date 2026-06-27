@@ -3,6 +3,7 @@ import 'package:couplesync/domain/entities/availability.dart';
 import 'package:couplesync/domain/entities/confirmation.dart';
 import 'package:couplesync/domain/entities/media_blob.dart';
 import 'package:couplesync/domain/entities/penalty.dart';
+import 'package:couplesync/domain/entities/roulette_item.dart';
 import 'package:couplesync/domain/entities/scheduled_event.dart';
 import 'package:couplesync/domain/entities/streak_stats.dart';
 import 'package:couplesync/domain/entities/user.dart';
@@ -134,6 +135,13 @@ void main() {
 
       final user = User(id: userA, displayName: 'Ana');
       expect(user.toDto().toDomain(), user);
+
+      final roulette = RouletteItem(
+        id: RouletteItemId('r1'),
+        text: 'idea',
+        favorite: true,
+      );
+      expect(roulette.toDto().toDomain(), roulette);
     },
   );
 }

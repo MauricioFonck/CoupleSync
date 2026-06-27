@@ -9,6 +9,7 @@ import '../screens/dashboard_screen.dart';
 import '../screens/history_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/penalties_screen.dart';
+import '../screens/roulette_screen.dart';
 import '../screens/schedule_screen.dart';
 import '../widgets/app_shell.dart';
 
@@ -58,6 +59,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/schedule',
             builder: (context, state) => const ScheduleScreen(),
+          ),
+          GoRoute(
+            path: '/roulette',
+            builder: (context, state) => const RouletteScreen(),
           ),
           GoRoute(
             path: '/history',

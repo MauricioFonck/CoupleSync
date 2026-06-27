@@ -60,6 +60,10 @@ service cloud.firestore {
       allow read, write: if isSignedIn();
     }
 
+    match /rouletteItems/{id} {
+      allow read, write: if isSignedIn();
+    }
+
     // Media: blob Base64 en colección separada (D1). Se valida el tamaño en
     // escritura para no superar el límite del documento.
     match /media/{mediaId} {

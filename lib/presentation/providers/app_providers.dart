@@ -6,6 +6,7 @@ import '../../application/services/confirmation_service.dart';
 import '../../application/services/couple_service.dart';
 import '../../application/services/lazy_schedule_service.dart';
 import '../../application/services/penalty_service.dart';
+import '../../application/services/roulette_service.dart';
 import '../../application/services/scheduling_service.dart';
 import '../../application/services/statistics_service.dart';
 import '../../domain/entities/user.dart';
@@ -58,6 +59,10 @@ final coupleServiceProvider = Provider<CoupleService>(
 
 final lazyScheduleServiceProvider = Provider<LazyScheduleService>(
   (ref) => ref.watch(compositionRootProvider).lazyScheduleService,
+);
+
+final rouletteServiceProvider = Provider<RouletteService>(
+  (ref) => ref.watch(compositionRootProvider).rouletteService,
 );
 
 final mediaProcessorProvider = Provider<MediaProcessorPort>(

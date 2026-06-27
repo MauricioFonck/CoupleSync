@@ -2,6 +2,7 @@ import 'package:couplesync/domain/entities/activity.dart';
 import 'package:couplesync/domain/entities/availability.dart';
 import 'package:couplesync/domain/entities/confirmation.dart';
 import 'package:couplesync/domain/entities/penalty.dart';
+import 'package:couplesync/domain/entities/roulette_item.dart';
 import 'package:couplesync/domain/entities/scheduled_event.dart';
 import 'package:couplesync/domain/entities/streak_stats.dart';
 import 'package:couplesync/domain/entities/user.dart';
@@ -14,6 +15,7 @@ import 'package:couplesync/domain/ports/confirmation_repository_port.dart';
 import 'package:couplesync/domain/ports/id_generator_port.dart';
 import 'package:couplesync/domain/ports/penalty_repository_port.dart';
 import 'package:couplesync/domain/ports/random_port.dart';
+import 'package:couplesync/domain/ports/roulette_repository_port.dart';
 import 'package:couplesync/domain/ports/scheduled_event_repository_port.dart';
 import 'package:couplesync/domain/ports/settings_repository_port.dart';
 import 'package:couplesync/domain/ports/statistics_repository_port.dart';
@@ -156,6 +158,24 @@ class InMemoryUserRepository implements UserRepositoryPort {
   Future<List<User>> getAll() async => store.values.toList();
   @override
   Future<void> upsert(User user) async => store[user.id.value] = user;
+}
+
+class InMemoryRouletteRepository implements RouletteRepositoryPort {
+  final Map<String, RouletteItem> store = {};
+  @override
+  Future<void> delete(RouletteItemId id) async => store.remove(id.value);
+  @override
+  Future<List<RouletteItem>> getAll() async => store.values.toList();
+  @override
+  Future<RouletteItem?> getById(RouletteItemId id) async => store[id.value];
+  @override
+  Future<void> save(RouletteItem item) async => store[item.id.value] = item;
+  @override
+  Future<void> saveAll(List<RouletteItem> items) async {
+    for (final item in items) {
+      store[item.id.value] = item;
+    }
+  }
 }
 
 class InMemoryStatisticsRepository implements StatisticsRepositoryPort {

@@ -24,3 +24,8 @@ final class MediaId extends Identifier {
 final class ScheduledEventId extends Identifier {
   ScheduledEventId(super.value);
 }
+
+/// Identidad de un ítem de la ruleta.
+final class RouletteItemId extends Identifier {
+  RouletteItemId(super.value);
+}

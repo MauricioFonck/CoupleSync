@@ -3,6 +3,7 @@ import '../../../domain/entities/availability.dart';
 import '../../../domain/entities/confirmation.dart';
 import '../../../domain/entities/media_blob.dart';
 import '../../../domain/entities/penalty.dart';
+import '../../../domain/entities/roulette_item.dart';
 import '../../../domain/entities/scheduled_event.dart';
 import '../../../domain/entities/streak_stats.dart';
 import '../../../domain/entities/user.dart';
@@ -21,6 +22,7 @@ import '../dtos/confirmation_dto.dart';
 import '../dtos/date_range_dto.dart';
 import '../dtos/media_blob_dto.dart';
 import '../dtos/penalty_dto.dart';
+import '../dtos/roulette_item_dto.dart';
 import '../dtos/scheduled_event_dto.dart';
 import '../dtos/scheduling_config_dto.dart';
 import '../dtos/streak_stats_dto.dart';
@@ -270,4 +272,15 @@ extension UserDtoMapper on UserDto {
 
 extension UserMapper on User {
   UserDto toDto() => UserDto(id: id.value, displayName: displayName);
+}
+
+// --- RouletteItem ---
+extension RouletteItemDtoMapper on RouletteItemDto {
+  RouletteItem toDomain() =>
+      RouletteItem(id: RouletteItemId(id), text: text, favorite: favorite);
+}
+
+extension RouletteItemMapper on RouletteItem {
+  RouletteItemDto toDto() =>
+      RouletteItemDto(id: id.value, text: text, favorite: favorite);
 }

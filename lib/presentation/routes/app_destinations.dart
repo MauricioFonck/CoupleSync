@@ -24,5 +24,6 @@ const List<AppDestination> appDestinations = [
     icon: Icons.calendar_month,
   ),
   AppDestination(route: '/schedule', label: 'Agenda', icon: Icons.view_week),
+  AppDestination(route: '/roulette', label: 'Ruleta', icon: Icons.casino),
   AppDestination(route: '/history', label: 'Historial', icon: Icons.history),
 ];

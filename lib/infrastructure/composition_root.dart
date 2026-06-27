@@ -8,6 +8,7 @@ import '../application/services/confirmation_service.dart';
 import '../application/services/couple_service.dart';
 import '../application/services/lazy_schedule_service.dart';
 import '../application/services/penalty_service.dart';
+import '../application/services/roulette_service.dart';
 import '../application/services/scheduling_service.dart';
 import '../application/services/statistics_service.dart';
 import '../domain/ports/auth_port.dart';
@@ -25,6 +26,7 @@ import '../domain/use_cases/generate_penalty_use_case.dart';
 import '../domain/use_cases/generate_weekly_schedule_use_case.dart';
 import '../domain/use_cases/penalty_use_cases.dart';
 import '../domain/use_cases/reschedule_event_use_case.dart';
+import '../domain/use_cases/roulette_use_cases.dart';
 import 'authentication/firebase_auth_adapter.dart';
 import 'dart_random.dart';
 import 'media/image_media_processor.dart';
@@ -34,6 +36,7 @@ import 'repositories/firestore_availability_repository.dart';
 import 'repositories/firestore_confirmation_repository.dart';
 import 'repositories/firestore_media_repository.dart';
 import 'repositories/firestore_penalty_repository.dart';
+import 'repositories/firestore_roulette_repository.dart';
 import 'repositories/firestore_scheduled_event_repository.dart';
 import 'repositories/firestore_settings_repository.dart';
 import 'repositories/firestore_statistics_repository.dart';
@@ -160,6 +163,19 @@ class CompositionRoot {
       scheduling: schedulingService,
       clock: clockPort,
     );
+
+    final roulette = FirestoreRouletteRepository(firestore);
+    rouletteService = RouletteService(
+      rouletteRepository: roulette,
+      idGenerator: idGen,
+      importItems: ImportRouletteItemsUseCase(
+        rouletteRepository: roulette,
+        idGenerator: idGen,
+      ),
+      drawRoulette: DrawRouletteUseCase(random: randomPort),
+      spinRoulette: SpinRouletteUseCase(random: randomPort),
+      spinFavorite: SpinFavoriteUseCase(random: randomPort),
+    );
   }
 
   late final AuthPort authPort;
@@ -175,4 +191,5 @@ class CompositionRoot {
   late final StatisticsService statisticsService;
   late final CoupleService coupleService;
   late final LazyScheduleService lazyScheduleService;
+  late final RouletteService rouletteService;
 }

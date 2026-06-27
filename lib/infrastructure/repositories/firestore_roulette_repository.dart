@@ -24,6 +24,13 @@ class FirestoreRouletteRepository implements RouletteRepositoryPort {
   }
 
   @override
+  Stream<List<RouletteItem>> watchAll() => _col.snapshots().map(
+    (snap) => snap.docs
+        .map((d) => RouletteItemDto.fromJson(d.data()).toDomain())
+        .toList(),
+  );
+
+  @override
   Future<RouletteItem?> getById(RouletteItemId id) async {
     final doc = await _col.doc(id.value).get();
     final data = doc.data();

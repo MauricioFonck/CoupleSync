@@ -5,6 +5,9 @@ import '../value_objects/ids.dart';
 abstract interface class RouletteHistoryRepositoryPort {
   Future<void> add(RouletteSpin spin);
   Future<List<RouletteSpin>> getAll();
+
+  /// Flujo en tiempo real del historial.
+  Stream<List<RouletteSpin>> watchAll();
   Future<RouletteSpin?> getById(RouletteSpinId id);
 
   /// Guarda cambios sobre una tirada existente (p. ej. marcar "hecha").

@@ -29,6 +29,13 @@ class FirestoreRouletteHistoryRepository
   }
 
   @override
+  Stream<List<RouletteSpin>> watchAll() => _col.snapshots().map(
+    (snap) => snap.docs
+        .map((d) => RouletteSpinDto.fromJson(d.data()).toDomain())
+        .toList(),
+  );
+
+  @override
   Future<RouletteSpin?> getById(RouletteSpinId id) async {
     final doc = await _col.doc(id.value).get();
     final data = doc.data();

@@ -70,7 +70,7 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
       _frameText = null;
       _spinning = false;
     });
-    ref.invalidate(rouletteHistoryProvider);
+    // El historial y el contador se actualizan solos vía stream (tiempo real).
   }
 
   Future<void> _spin() async {
@@ -94,24 +94,24 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
     if (spin == null || spin.done) return;
     final result = await ref.read(rouletteServiceProvider).markDone(spin.id);
     if (!mounted) return;
-    result.fold((updated) {
-      setState(() => _result = updated);
-      ref.invalidate(rouletteHistoryProvider);
-    }, (failure) => _snack(failure.message));
+    result.fold(
+      (updated) => setState(() => _result = updated),
+      (failure) => _snack(failure.message),
+    );
   }
 
   Future<void> _toggleFavorite() async {
     final spin = _result;
     if (spin == null) return;
     final failure = await ref
-        .read(rouletteControllerProvider.notifier)
+        .read(rouletteActionsProvider)
         .toggleFavorite(spin.itemId);
     _snack(failure?.message ?? 'Favorito actualizado ⭐');
   }
 
   @override
   Widget build(BuildContext context) {
-    final pool = ref.watch(rouletteControllerProvider);
+    final pool = ref.watch(rouletteItemsProvider);
     final done = ref.watch(rouletteDoneCountProvider);
 
     return Scaffold(
@@ -360,7 +360,7 @@ class RouletteManageScreen extends ConsumerWidget {
     );
     if (confirmed != true) return;
     final failure = await ref
-        .read(rouletteControllerProvider.notifier)
+        .read(rouletteActionsProvider)
         .import(controller.text, level: level);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -370,8 +370,8 @@ class RouletteManageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pool = ref.watch(rouletteControllerProvider);
-    final notifier = ref.read(rouletteControllerProvider.notifier);
+    final pool = ref.watch(rouletteItemsProvider);
+    final actions = ref.read(rouletteActionsProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ideas de la ruleta'),
@@ -401,7 +401,7 @@ class RouletteManageScreen extends ConsumerWidget {
                     item.favorite ? Icons.star : Icons.star_border,
                     color: item.favorite ? Colors.amber : null,
                   ),
-                  onPressed: () => notifier.toggleFavorite(item.id),
+                  onPressed: () => actions.toggleFavorite(item.id),
                 ),
                 title: Text(item.text),
                 subtitle: Text('Nivel: ${levelLabel(item.level)}'),
@@ -410,7 +410,7 @@ class RouletteManageScreen extends ConsumerWidget {
                   children: [
                     PopupMenuButton<IntensityLevel>(
                       icon: const Icon(Icons.signal_cellular_alt),
-                      onSelected: (l) => notifier.setLevel(item.id, l),
+                      onSelected: (l) => actions.setLevel(item.id, l),
                       itemBuilder: (_) => [
                         for (final l in IntensityLevel.values)
                           PopupMenuItem(value: l, child: Text(levelLabel(l))),
@@ -418,7 +418,7 @@ class RouletteManageScreen extends ConsumerWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => notifier.delete(item.id),
+                      onPressed: () => actions.delete(item.id),
                     ),
                   ],
                 ),
@@ -462,12 +462,8 @@ class RouletteHistoryScreen extends ConsumerWidget {
                     : IconButton(
                         icon: const Icon(Icons.check_circle_outline),
                         tooltip: 'Marcar hecho',
-                        onPressed: () async {
-                          await ref
-                              .read(rouletteServiceProvider)
-                              .markDone(spin.id);
-                          ref.invalidate(rouletteHistoryProvider);
-                        },
+                        onPressed: () =>
+                            ref.read(rouletteServiceProvider).markDone(spin.id),
                       ),
               );
             },

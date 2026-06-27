@@ -43,6 +43,15 @@ class RouletteService {
 
   Future<Result<List<RouletteItem>>> all() => runCatching(_repository.getAll);
 
+  /// Flujo en tiempo real del pool de ideas.
+  Stream<List<RouletteItem>> watchItems() => _repository.watchAll();
+
+  /// Flujo en tiempo real del historial (más reciente primero).
+  Stream<List<RouletteSpin>> watchHistory() => _history.watchAll().map(
+    (spins) =>
+        spins.toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+  );
+
   Future<Result<int>> import(
     List<String> lines, {
     IntensityLevel level = IntensityLevel.medium,

@@ -4,6 +4,9 @@ import '../value_objects/ids.dart';
 /// Puerto de persistencia de los ítems de la ruleta.
 abstract interface class RouletteRepositoryPort {
   Future<List<RouletteItem>> getAll();
+
+  /// Flujo en tiempo real del pool (para sincronizar entre A y B).
+  Stream<List<RouletteItem>> watchAll();
   Future<RouletteItem?> getById(RouletteItemId id);
   Future<void> save(RouletteItem item);
 

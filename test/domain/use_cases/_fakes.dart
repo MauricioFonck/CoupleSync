@@ -169,6 +169,8 @@ class InMemoryRouletteRepository implements RouletteRepositoryPort {
   @override
   Future<List<RouletteItem>> getAll() async => store.values.toList();
   @override
+  Stream<List<RouletteItem>> watchAll() => Stream.value(store.values.toList());
+  @override
   Future<RouletteItem?> getById(RouletteItemId id) async => store[id.value];
   @override
   Future<void> save(RouletteItem item) async => store[item.id.value] = item;
@@ -187,6 +189,8 @@ class InMemoryRouletteHistoryRepository
   Future<void> add(RouletteSpin spin) async => store[spin.id.value] = spin;
   @override
   Future<List<RouletteSpin>> getAll() async => store.values.toList();
+  @override
+  Stream<List<RouletteSpin>> watchAll() => Stream.value(store.values.toList());
   @override
   Future<RouletteSpin?> getById(RouletteSpinId id) async => store[id.value];
   @override

@@ -29,3 +29,8 @@ final class ScheduledEventId extends Identifier {
 final class RouletteItemId extends Identifier {
   RouletteItemId(super.value);
 }
+
+/// Identidad de una tirada de la ruleta (historial).
+final class RouletteSpinId extends Identifier {
+  RouletteSpinId(super.value);
+}

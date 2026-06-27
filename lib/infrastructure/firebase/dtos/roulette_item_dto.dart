@@ -9,6 +9,8 @@ abstract class RouletteItemDto with _$RouletteItemDto {
     required String id,
     required String text,
     required bool favorite,
+    // Por defecto 'medium' para compatibilidad con ítems creados sin nivel.
+    @Default('medium') String level,
   }) = _RouletteItemDto;
 
   factory RouletteItemDto.fromJson(Map<String, dynamic> json) =>

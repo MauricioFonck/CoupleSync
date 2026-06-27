@@ -12,6 +12,7 @@ abstract final class FirestoreCollections {
   static const settings = 'settings';
   static const media = 'media';
   static const rouletteItems = 'rouletteItems';
+  static const rouletteHistory = 'rouletteHistory';
   static const notifications = 'notifications';
   static const auditLogs = 'auditLogs';
 

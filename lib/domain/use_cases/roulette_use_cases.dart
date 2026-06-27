@@ -6,6 +6,7 @@ import '../ports/id_generator_port.dart';
 import '../ports/random_port.dart';
 import '../ports/roulette_repository_port.dart';
 import '../value_objects/ids.dart';
+import '../value_objects/intensity_level.dart';
 
 /// Importa una lista de textos (una idea por línea) como ítems no favoritos.
 /// Ignora líneas vacías. Devuelve el número de ítems creados.
@@ -19,7 +20,10 @@ class ImportRouletteItemsUseCase {
   final RouletteRepositoryPort _repository;
   final IdGeneratorPort _idGenerator;
 
-  Future<int> execute(List<String> texts) async {
+  Future<int> execute(
+    List<String> texts, {
+    IntensityLevel level = IntensityLevel.medium,
+  }) async {
     final items = texts
         .map((t) => t.trim())
         .where((t) => t.isNotEmpty)
@@ -28,6 +32,7 @@ class ImportRouletteItemsUseCase {
             id: RouletteItemId(_idGenerator.newId()),
             text: t,
             favorite: false,
+            level: level,
           ),
         )
         .toList();

@@ -3,6 +3,7 @@ import 'package:couplesync/domain/entities/availability.dart';
 import 'package:couplesync/domain/entities/confirmation.dart';
 import 'package:couplesync/domain/entities/penalty.dart';
 import 'package:couplesync/domain/entities/roulette_item.dart';
+import 'package:couplesync/domain/entities/roulette_spin.dart';
 import 'package:couplesync/domain/entities/scheduled_event.dart';
 import 'package:couplesync/domain/entities/streak_stats.dart';
 import 'package:couplesync/domain/entities/user.dart';
@@ -15,6 +16,7 @@ import 'package:couplesync/domain/ports/confirmation_repository_port.dart';
 import 'package:couplesync/domain/ports/id_generator_port.dart';
 import 'package:couplesync/domain/ports/penalty_repository_port.dart';
 import 'package:couplesync/domain/ports/random_port.dart';
+import 'package:couplesync/domain/ports/roulette_history_repository_port.dart';
 import 'package:couplesync/domain/ports/roulette_repository_port.dart';
 import 'package:couplesync/domain/ports/scheduled_event_repository_port.dart';
 import 'package:couplesync/domain/ports/settings_repository_port.dart';
@@ -176,6 +178,19 @@ class InMemoryRouletteRepository implements RouletteRepositoryPort {
       store[item.id.value] = item;
     }
   }
+}
+
+class InMemoryRouletteHistoryRepository
+    implements RouletteHistoryRepositoryPort {
+  final Map<String, RouletteSpin> store = {};
+  @override
+  Future<void> add(RouletteSpin spin) async => store[spin.id.value] = spin;
+  @override
+  Future<List<RouletteSpin>> getAll() async => store.values.toList();
+  @override
+  Future<RouletteSpin?> getById(RouletteSpinId id) async => store[id.value];
+  @override
+  Future<void> save(RouletteSpin spin) async => store[spin.id.value] = spin;
 }
 
 class InMemoryStatisticsRepository implements StatisticsRepositoryPort {

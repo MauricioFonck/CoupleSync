@@ -4,11 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/roulette_item.dart';
+import '../../domain/entities/roulette_spin.dart';
+import '../../domain/value_objects/intensity_level.dart';
 import '../providers/app_providers.dart';
 import '../providers/roulette_controller.dart';
 
-/// Ruleta privada: saca 20 ideas del pool, permite "revolver" (otras 20),
-/// "girar" (elige una) y "girar hasta algo bueno" (un favorito).
+String levelLabel(IntensityLevel level) => switch (level) {
+  IntensityLevel.soft => 'Suave',
+  IntensityLevel.medium => 'Medio',
+  IntensityLevel.hard => 'Fuerte',
+};
+
+/// Ruleta privada: filtra por intensidad, saca 20, revuelve, gira (y hasta algo
+/// bueno), con botones rápidos en la carta e historial con marca "hecho".
 class RouletteScreen extends ConsumerStatefulWidget {
   const RouletteScreen({super.key});
 
@@ -18,8 +26,9 @@ class RouletteScreen extends ConsumerStatefulWidget {
 
 class _RouletteScreenState extends ConsumerState<RouletteScreen> {
   final _random = math.Random();
+  final Set<IntensityLevel> _levels = {...IntensityLevel.values};
   List<RouletteItem> _subset = const [];
-  RouletteItem? _result;
+  RouletteSpin? _result;
   String? _frameText;
   bool _spinning = false;
 
@@ -31,33 +40,37 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
   }
 
   Future<void> _draw() async {
-    final result = await ref.read(rouletteServiceProvider).draw();
+    final result = await ref
+        .read(rouletteServiceProvider)
+        .draw(levels: _levels);
     if (!mounted) return;
     result.fold((items) {
       setState(() {
         _subset = items;
         _result = null;
       });
+      if (items.isEmpty) _snack('No hay ideas con esos niveles.');
     }, (failure) => _snack(failure.message));
   }
 
-  Future<void> _animateTo(RouletteItem target) async {
+  Future<void> _animateTo(RouletteSpin spin) async {
     setState(() => _spinning = true);
     const frames = 16;
     for (var i = 0; i < frames; i++) {
       if (!mounted) return;
       final frame = _subset.isEmpty
-          ? target
-          : _subset[_random.nextInt(_subset.length)];
-      setState(() => _frameText = frame.text);
+          ? spin.text
+          : _subset[_random.nextInt(_subset.length)].text;
+      setState(() => _frameText = frame);
       await Future<void>.delayed(Duration(milliseconds: 40 + i * i * 2));
     }
     if (!mounted) return;
     setState(() {
-      _result = target;
+      _result = spin;
       _frameText = null;
       _spinning = false;
     });
+    ref.invalidate(rouletteHistoryProvider);
   }
 
   Future<void> _spin() async {
@@ -69,19 +82,52 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
 
   Future<void> _spinFavorite() async {
     if (_spinning) return;
-    final result = await ref.read(rouletteServiceProvider).spinFavorite();
+    final result = await ref
+        .read(rouletteServiceProvider)
+        .spinFavorite(levels: _levels);
     if (!mounted) return;
     await result.fold(_animateTo, (failure) async => _snack(failure.message));
+  }
+
+  Future<void> _markDone() async {
+    final spin = _result;
+    if (spin == null || spin.done) return;
+    final result = await ref.read(rouletteServiceProvider).markDone(spin.id);
+    if (!mounted) return;
+    result.fold((updated) {
+      setState(() => _result = updated);
+      ref.invalidate(rouletteHistoryProvider);
+    }, (failure) => _snack(failure.message));
+  }
+
+  Future<void> _toggleFavorite() async {
+    final spin = _result;
+    if (spin == null) return;
+    final failure = await ref
+        .read(rouletteControllerProvider.notifier)
+        .toggleFavorite(spin.itemId);
+    _snack(failure?.message ?? 'Favorito actualizado ⭐');
   }
 
   @override
   Widget build(BuildContext context) {
     final pool = ref.watch(rouletteControllerProvider);
+    final done = ref.watch(rouletteDoneCountProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ruleta'),
         actions: [
+          IconButton(
+            key: const Key('roulette_history'),
+            tooltip: 'Historial',
+            icon: const Icon(Icons.history),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const RouletteHistoryScreen(),
+              ),
+            ),
+          ),
           IconButton(
             key: const Key('roulette_manage'),
             tooltip: 'Gestionar ideas',
@@ -118,21 +164,50 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
               ),
             );
           }
-          return _buildGame(context, items.length);
+          return _buildGame(context, items.length, done);
         },
       ),
     );
   }
 
-  Widget _buildGame(BuildContext context, int poolSize) {
+  Widget _buildGame(BuildContext context, int poolSize, int doneCount) {
     final theme = Theme.of(context);
+    final result = _result;
     final cardText =
-        _frameText ?? _result?.text ?? 'Pulsa "Sacar 20" y luego "Girar"';
+        _frameText ?? result?.text ?? 'Pulsa "Sacar 20" y luego "Girar"';
 
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Completadas: $doneCount',
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              for (final level in IntensityLevel.values)
+                FilterChip(
+                  key: Key('level_${level.name}'),
+                  label: Text(levelLabel(level)),
+                  selected: _levels.contains(level),
+                  onSelected: (sel) => setState(() {
+                    if (sel) {
+                      _levels.add(level);
+                    } else if (_levels.length > 1) {
+                      _levels.remove(level);
+                    }
+                  }),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
           Expanded(
             child: Card(
               key: const Key('roulette_card'),
@@ -143,13 +218,50 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (_result?.favorite ?? false)
-                        const Icon(Icons.star, color: Colors.amber, size: 32),
+                      if (result != null && _frameText == null) ...[
+                        Chip(label: Text(levelLabel(result.level))),
+                        if (result.done)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 4),
+                            child: Chip(
+                              avatar: Icon(Icons.check, color: Colors.green),
+                              label: Text('Hecho'),
+                            ),
+                          ),
+                        const SizedBox(height: 8),
+                      ],
                       Text(
                         cardText,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleLarge,
                       ),
+                      if (result != null && !_spinning) ...[
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 8,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            TextButton.icon(
+                              key: const Key('card_favorite'),
+                              onPressed: _toggleFavorite,
+                              icon: const Icon(Icons.star_border),
+                              label: const Text('Favorito'),
+                            ),
+                            TextButton.icon(
+                              key: const Key('card_respin'),
+                              onPressed: _spin,
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Otra'),
+                            ),
+                            TextButton.icon(
+                              key: const Key('card_done'),
+                              onPressed: result.done ? null : _markDone,
+                              icon: const Icon(Icons.check_circle_outline),
+                              label: const Text('Hecho'),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -195,42 +307,61 @@ class _RouletteScreenState extends ConsumerState<RouletteScreen> {
   }
 }
 
-/// Gestión de ideas: importar en bloque, añadir, marcar favorito y borrar.
+/// Gestión de ideas: importar (con nivel), marcar favorito, cambiar nivel, borrar.
 class RouletteManageScreen extends ConsumerWidget {
   const RouletteManageScreen({super.key});
 
   Future<void> _import(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController();
+    var level = IntensityLevel.medium;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Importar ideas'),
-        content: TextField(
-          key: const Key('roulette_import_text'),
-          controller: controller,
-          maxLines: 8,
-          decoration: const InputDecoration(
-            hintText: 'Una idea por línea…',
-            border: OutlineInputBorder(),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocal) => AlertDialog(
+          title: const Text('Importar ideas'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                key: const Key('roulette_import_text'),
+                controller: controller,
+                maxLines: 6,
+                decoration: const InputDecoration(
+                  hintText: 'Una idea por línea…',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<IntensityLevel>(
+                key: const Key('roulette_import_level'),
+                initialValue: level,
+                decoration: const InputDecoration(labelText: 'Nivel'),
+                items: [
+                  for (final l in IntensityLevel.values)
+                    DropdownMenuItem(value: l, child: Text(levelLabel(l))),
+                ],
+                onChanged: (v) => setLocal(() => level = v ?? level),
+              ),
+            ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              key: const Key('roulette_import_confirm'),
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Importar'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            key: const Key('roulette_import_confirm'),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Importar'),
-          ),
-        ],
       ),
     );
     if (confirmed != true) return;
     final failure = await ref
         .read(rouletteControllerProvider.notifier)
-        .import(controller.text);
+        .import(controller.text, level: level);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(failure?.message ?? 'Ideas importadas')),
@@ -240,6 +371,7 @@ class RouletteManageScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pool = ref.watch(rouletteControllerProvider);
+    final notifier = ref.read(rouletteControllerProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ideas de la ruleta'),
@@ -269,17 +401,74 @@ class RouletteManageScreen extends ConsumerWidget {
                     item.favorite ? Icons.star : Icons.star_border,
                     color: item.favorite ? Colors.amber : null,
                   ),
-                  onPressed: () => ref
-                      .read(rouletteControllerProvider.notifier)
-                      .toggleFavorite(item.id),
+                  onPressed: () => notifier.toggleFavorite(item.id),
                 ),
                 title: Text(item.text),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () => ref
-                      .read(rouletteControllerProvider.notifier)
-                      .delete(item.id),
+                subtitle: Text('Nivel: ${levelLabel(item.level)}'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    PopupMenuButton<IntensityLevel>(
+                      icon: const Icon(Icons.signal_cellular_alt),
+                      onSelected: (l) => notifier.setLevel(item.id, l),
+                      itemBuilder: (_) => [
+                        for (final l in IntensityLevel.values)
+                          PopupMenuItem(value: l, child: Text(levelLabel(l))),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () => notifier.delete(item.id),
+                    ),
+                  ],
                 ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Historial de tiradas, con opción de marcar "hecho".
+class RouletteHistoryScreen extends ConsumerWidget {
+  const RouletteHistoryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final history = ref.watch(rouletteHistoryProvider);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Historial de la ruleta')),
+      body: history.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        data: (spins) {
+          if (spins.isEmpty) {
+            return const Center(child: Text('Aún no habéis girado nada.'));
+          }
+          return ListView.builder(
+            itemCount: spins.length,
+            itemBuilder: (context, index) {
+              final spin = spins[index];
+              final d = spin.createdAt;
+              return ListTile(
+                title: Text(spin.text),
+                subtitle: Text(
+                  '${d.day}/${d.month}/${d.year} · ${levelLabel(spin.level)}',
+                ),
+                trailing: spin.done
+                    ? const Icon(Icons.check_circle, color: Colors.green)
+                    : IconButton(
+                        icon: const Icon(Icons.check_circle_outline),
+                        tooltip: 'Marcar hecho',
+                        onPressed: () async {
+                          await ref
+                              .read(rouletteServiceProvider)
+                              .markDone(spin.id);
+                          ref.invalidate(rouletteHistoryProvider);
+                        },
+                      ),
               );
             },
           );

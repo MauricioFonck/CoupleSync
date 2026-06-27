@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RouletteItemDto {
 
- String get id; String get text; bool get favorite;
+ String get id; String get text; bool get favorite; String get level;
 /// Create a copy of RouletteItemDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $RouletteItemDtoCopyWith<RouletteItemDto> get copyWith => _$RouletteItemDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouletteItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.favorite, favorite) || other.favorite == favorite));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouletteItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,favorite);
+int get hashCode => Object.hash(runtimeType,id,text,favorite,level);
 
 @override
 String toString() {
-  return 'RouletteItemDto(id: $id, text: $text, favorite: $favorite)';
+  return 'RouletteItemDto(id: $id, text: $text, favorite: $favorite, level: $level)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $RouletteItemDtoCopyWith<$Res>  {
   factory $RouletteItemDtoCopyWith(RouletteItemDto value, $Res Function(RouletteItemDto) _then) = _$RouletteItemDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String text, bool favorite
+ String id, String text, bool favorite, String level
 });
 
 
@@ -65,12 +65,13 @@ class _$RouletteItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of RouletteItemDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? favorite = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? favorite = null,Object? level = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,favorite: null == favorite ? _self.favorite : favorite // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String text,  bool favorite)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String text,  bool favorite,  String level)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RouletteItemDto() when $default != null:
-return $default(_that.id,_that.text,_that.favorite);case _:
+return $default(_that.id,_that.text,_that.favorite,_that.level);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.id,_that.text,_that.favorite);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String text,  bool favorite)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String text,  bool favorite,  String level)  $default,) {final _that = this;
 switch (_that) {
 case _RouletteItemDto():
-return $default(_that.id,_that.text,_that.favorite);case _:
+return $default(_that.id,_that.text,_that.favorite,_that.level);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.id,_that.text,_that.favorite);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String text,  bool favorite)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String text,  bool favorite,  String level)?  $default,) {final _that = this;
 switch (_that) {
 case _RouletteItemDto() when $default != null:
-return $default(_that.id,_that.text,_that.favorite);case _:
+return $default(_that.id,_that.text,_that.favorite,_that.level);case _:
   return null;
 
 }
@@ -211,12 +212,13 @@ return $default(_that.id,_that.text,_that.favorite);case _:
 @JsonSerializable()
 
 class _RouletteItemDto implements RouletteItemDto {
-  const _RouletteItemDto({required this.id, required this.text, required this.favorite});
+  const _RouletteItemDto({required this.id, required this.text, required this.favorite, this.level = 'medium'});
   factory _RouletteItemDto.fromJson(Map<String, dynamic> json) => _$RouletteItemDtoFromJson(json);
 
 @override final  String id;
 @override final  String text;
 @override final  bool favorite;
+@override@JsonKey() final  String level;
 
 /// Create a copy of RouletteItemDto
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RouletteItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.favorite, favorite) || other.favorite == favorite));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RouletteItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,favorite);
+int get hashCode => Object.hash(runtimeType,id,text,favorite,level);
 
 @override
 String toString() {
-  return 'RouletteItemDto(id: $id, text: $text, favorite: $favorite)';
+  return 'RouletteItemDto(id: $id, text: $text, favorite: $favorite, level: $level)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$RouletteItemDtoCopyWith<$Res> implements $RouletteItemDto
   factory _$RouletteItemDtoCopyWith(_RouletteItemDto value, $Res Function(_RouletteItemDto) _then) = __$RouletteItemDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String text, bool favorite
+ String id, String text, bool favorite, String level
 });
 
 
@@ -268,12 +270,13 @@ class __$RouletteItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of RouletteItemDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? favorite = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? favorite = null,Object? level = null,}) {
   return _then(_RouletteItemDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,favorite: null == favorite ? _self.favorite : favorite // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

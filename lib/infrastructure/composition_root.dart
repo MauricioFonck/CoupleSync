@@ -36,6 +36,7 @@ import 'repositories/firestore_availability_repository.dart';
 import 'repositories/firestore_confirmation_repository.dart';
 import 'repositories/firestore_media_repository.dart';
 import 'repositories/firestore_penalty_repository.dart';
+import 'repositories/firestore_roulette_history_repository.dart';
 import 'repositories/firestore_roulette_repository.dart';
 import 'repositories/firestore_scheduled_event_repository.dart';
 import 'repositories/firestore_settings_repository.dart';
@@ -165,9 +166,12 @@ class CompositionRoot {
     );
 
     final roulette = FirestoreRouletteRepository(firestore);
+    final rouletteHistory = FirestoreRouletteHistoryRepository(firestore);
     rouletteService = RouletteService(
       rouletteRepository: roulette,
+      historyRepository: rouletteHistory,
       idGenerator: idGen,
+      clock: clockPort,
       importItems: ImportRouletteItemsUseCase(
         rouletteRepository: roulette,
         idGenerator: idGen,

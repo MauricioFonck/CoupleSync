@@ -4,7 +4,9 @@ import '../../application/app_failure.dart';
 import '../../application/result.dart';
 import '../../application/services/roulette_service.dart';
 import '../../domain/entities/roulette_item.dart';
+import '../../domain/entities/roulette_spin.dart';
 import '../../domain/value_objects/ids.dart';
+import '../../domain/value_objects/intensity_level.dart';
 import 'app_providers.dart';
 
 /// Carga el pool completo de ideas de la ruleta y orquesta su gestión.
@@ -24,13 +26,18 @@ class RouletteController extends AsyncNotifier<List<RouletteItem>> {
     return result.fold((value) => value, (failure) => throw failure);
   }
 
-  Future<AppFailure?> import(String multiline) =>
-      _run(() => _service.import(multiline.split('\n')));
+  Future<AppFailure?> import(
+    String multiline, {
+    IntensityLevel level = IntensityLevel.medium,
+  }) => _run(() => _service.import(multiline.split('\n'), level: level));
 
   Future<AppFailure?> create(String text) => _run(() => _service.create(text));
 
   Future<AppFailure?> toggleFavorite(RouletteItemId id) =>
       _run(() => _service.toggleFavorite(id));
+
+  Future<AppFailure?> setLevel(RouletteItemId id, IntensityLevel level) =>
+      _run(() => _service.setLevel(id, level));
 
   Future<AppFailure?> delete(RouletteItemId id) =>
       _run(() => _service.delete(id));
@@ -43,3 +50,15 @@ class RouletteController extends AsyncNotifier<List<RouletteItem>> {
     return failure;
   }
 }
+
+/// Historial de tiradas (más reciente primero).
+final rouletteHistoryProvider = FutureProvider<List<RouletteSpin>>((ref) async {
+  final result = await ref.watch(rouletteServiceProvider).history();
+  return result.fold((value) => value, (failure) => throw failure);
+});
+
+/// Número de tiradas marcadas como "hechas".
+final rouletteDoneCountProvider = Provider<int>((ref) {
+  final history = ref.watch(rouletteHistoryProvider).asData?.value ?? const [];
+  return history.where((s) => s.done).length;
+});

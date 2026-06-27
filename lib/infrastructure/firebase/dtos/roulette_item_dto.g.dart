@@ -11,6 +11,7 @@ _RouletteItemDto _$RouletteItemDtoFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       text: json['text'] as String,
       favorite: json['favorite'] as bool,
+      level: json['level'] as String? ?? 'medium',
     );
 
 Map<String, dynamic> _$RouletteItemDtoToJson(_RouletteItemDto instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$RouletteItemDtoToJson(_RouletteItemDto instance) =>
       'id': instance.id,
       'text': instance.text,
       'favorite': instance.favorite,
+      'level': instance.level,
     };

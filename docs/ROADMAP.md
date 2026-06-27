@@ -502,10 +502,11 @@
 - [x] `flutter build web --release` verificado; comando documentado con `--dart-define` (site key/VAPID) en `docs/DEPLOY.md`.
 - [x] Variables de entorno por `--dart-define` (dev sin keys; prod con keys).
 
-### Plan 13.2 — Deploy Firebase Hosting ✅ (config) / 🔧 (ejecución)
-- [x] `firebase.json` (hosting `build/web`, rewrite SPA, `no-cache` del SW + reglas) y `.firebaserc` (`couplesync-cb0a8`).
-- [ ] 🔧 MANUAL (pendiente): `firebase deploy` y verificar dominio + HTTPS.
-- [ ] 🔧 MANUAL (pendiente): añadir el dominio de hosting al referrer de la API key (D5).
+### Plan 13.2 — Deploy ✅ (config) / 🔧 (ejecución)
+- [x] **Frontend en Vercel**: `vercel.json` (build + rewrites SPA) y `vercel-build.sh` (instala Flutter y compila). Backend (Auth/Firestore/FCM/reglas) permanece en Firebase.
+- [x] `firebase.json` + `.firebaserc` para `firebase deploy --only firestore:rules` (las reglas viven en Firebase aunque el hosting sea Vercel).
+- [ ] 🔧 MANUAL (pendiente): importar el repo en Vercel + env vars (`RECAPTCHA_V3_SITE_KEY`, `FCM_VAPID_KEY`); desplegar reglas con Firebase CLI.
+- [ ] 🔧 MANUAL (pendiente): añadir el dominio de Vercel al referrer de la API key y a *Authorized domains* de Auth (D5).
 
 ### Plan 13.3 — Checklist de salida a producción
 - [x] Checklist documentado en `docs/DEPLOY.md`.
